@@ -94,39 +94,30 @@ const Footer: React.FC = () => {
         {/* Contact Section */}
         <div id="contact" className="py-12 border-t border-blue-800">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="text-center md:text-left">
+            <div>
               <h3 className="text-lg font-semibold mb-4 text-yellow-400">Contact Us</h3>
               <div className="space-y-3">
-                <div className="flex items-center justify-center md:justify-start gap-3">
+                <div className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-yellow-400" />
                   <span className="text-blue-200">+91 93922 65654</span>
                 </div>
-                <div className="flex items-center justify-center md:justify-start gap-3">
+                <div className="flex items-center gap-3">
                   <Mail className="h-5 w-5 text-yellow-400" />
                   <span className="text-blue-200">shrikanth@sjcapital.in</span>
                 </div>
-                <div className="flex items-center justify-center md:justify-start gap-3">
+                <div className="flex items-center gap-3">
                   <MapPin className="h-5 w-5 text-yellow-400" />
                   <span className="text-blue-200">Hyderabad, Telangana</span>
                 </div>
               </div>
             </div>
 
-            <div className="text-center">
+            <div>
               <h3 className="text-lg font-semibold mb-4 text-yellow-400">Business Hours</h3>
               <div className="space-y-2 text-blue-200">
                 <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
                 <p>Saturday: 9:00 AM - 4:00 PM</p>
                 <p>Sunday: Closed</p>
-              </div>
-            </div>
-
-            <div className="text-center md:text-right">
-              <h3 className="text-lg font-semibold mb-4 text-yellow-400">Regulatory Info</h3>
-              <div className="space-y-2 text-blue-200">
-                <p>SEBI Reg. No: INH000000000</p>
-                <p>AMFI Reg. No: ARN-000000</p>
-                <p>CIN: U65990MH2008PTC123456</p>
               </div>
             </div>
           </div>
