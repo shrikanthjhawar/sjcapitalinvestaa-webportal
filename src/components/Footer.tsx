@@ -124,9 +124,9 @@ const Footer: React.FC = () => {
             <div className="text-center md:text-right">
               <h3 className="text-lg font-semibold mb-4 text-yellow-400">Regulatory Info</h3>
               <div className="space-y-2 text-blue-200">
-                <p>SEBI Reg. No: INH000000000</p>
-                <p>AMFI Reg. No: ARN-000000</p>
-                <p>CIN: U65990MH2008PTC123456</p>
+               {/*// <p>SEBI Reg. No: INH000000000</p>*/}
+               {/*// <p>AMFI Reg. No: ARN-000000</p>
+                <p>CIN: U65990MH2008PTC123456</p> */}
               </div>
             </div>
           </div>
@@ -136,7 +136,7 @@ const Footer: React.FC = () => {
         <div className="py-6 border-t border-blue-800">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-blue-200 text-sm">
-              © 2024 SJ Capital Investaa. All rights reserved.
+              © 2025 SJ Capital Investaa. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="#" className="text-blue-200 hover:text-yellow-400 text-sm transition-colors duration-200">
@@ -145,6 +145,9 @@ const Footer: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        Risk Factors – Investments in Mutual Funds are subject to Market Risks. Read all scheme-related documents carefully before investing. Mutual Fund Schemes do not assure or guarantee any returns. Past performances of any Mutual Fund Scheme may or may not be sustained in the future. There is no guarantee that the investment objective of any suggested scheme shall be achieved. All existing and prospective investors are advised to check and evaluate the Exit loads and other cost structures (TER) applicable at the time of making the investment before finalizing any investment decision for Mutual Funds schemes. We deal in Regular Plans only for Mutual Fund Schemes and earn a Trailing Commission on client investments.
       </div>
     </footer>
   );

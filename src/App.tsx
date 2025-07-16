@@ -4,6 +4,7 @@ import Hero from './components/Hero';
 import About from './components/About';
 import Services from './components/Services';
 import SIPCalculator from './components/SIPCalculator';
+import BookingAndContact from './components/BookingAndContact';
 import Footer from './components/Footer';
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <About />
         <Services />
         <SIPCalculator />
+         <BookingAndContact />
       </main>
       <Footer />
     </div>

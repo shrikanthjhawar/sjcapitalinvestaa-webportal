@@ -83,15 +83,7 @@ const About: React.FC = () => {
 
         {/* Stats Section */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
-            <div key={index} className="text-center p-6 bg-gradient-to-br from-blue-50 to-yellow-50 rounded-xl border border-blue-100 hover:border-yellow-300 transition-all duration-300 transform hover:scale-105">
-              <div className="bg-gradient-to-r from-blue-900 to-yellow-600 p-3 rounded-lg w-fit mx-auto mb-4">
-                <stat.icon className="h-6 w-6 text-white" />
-              </div>
-              <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
-              <div className="text-gray-600 font-medium">{stat.label}</div>
-            </div>
-          ))}
+    
         </div>
       </div>
     </section>

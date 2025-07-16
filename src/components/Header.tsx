@@ -50,8 +50,14 @@ const Header: React.FC = () => {
             >
               SIP Calculator
             </button>
-            <a 
-              href="https://demo.investwell.app/app/#/login"
+              <button
+              onClick={() => scrollToSection('booking-contact')}
+              className="text-gray-300 hover:text-yellow-400 transition-colors duration-200"
+            >
+              Contact
+            </button>
+            {/*<a 
+              href="https://demo.investwell.app/app/#/login" 
               target="_blank"
               rel="noopener noreferrer"
               className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 border border-gray-600 hover:border-yellow-400 px-4 py-2 rounded-lg"
@@ -65,7 +71,7 @@ const Header: React.FC = () => {
               className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-blue-900 px-6 py-2 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200 transform hover:scale-105"
             >
               Sign Up
-            </a>
+            </a>*/}
           </nav>
 
           {/* Mobile menu button */}
