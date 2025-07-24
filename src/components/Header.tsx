@@ -1,14 +1,32 @@
 import React, { useState } from 'react';
 import { Menu, X, TrendingUp } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    // If we are not on the home page, navigate there first.
+    if (location.pathname !== '/') {
+      navigate('/');
+      // Use a timeout to allow navigation to complete and the page to render.
+      // A small delay like 100ms is usually sufficient.
+      setTimeout(() => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 100);
+    } else {
+      // If already on the home page, just scroll.
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
+    // Close the mobile menu if it's open.
     setIsMenuOpen(false);
   };
 
@@ -50,6 +68,12 @@ const Header: React.FC = () => {
             >
               SIP Calculator
             </button>
+            <Link
+              to="/blogs"
+              className="text-gray-300 hover:text-yellow-400 transition-colors duration-200"
+            >
+              Blogs
+            </Link>
               <button
               onClick={() => scrollToSection('booking-contact')}
               className="text-gray-300 hover:text-yellow-400 transition-colors duration-200"
@@ -110,6 +134,19 @@ const Header: React.FC = () => {
                 className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
               >
                 SIP Calculator
+              </button>
+              <Link
+                to="/blogs"
+                onClick={() => setIsMenuOpen(false)}
+                className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
+              >
+                Blogs
+              </Link>
+              <button
+                onClick={() => scrollToSection('booking-contact')}
+                className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
+              >
+                Contact
               </button>
               <a 
                 href="https://demo.investwell.app/app/#/login"
