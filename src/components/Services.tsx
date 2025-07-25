@@ -76,6 +76,13 @@ const Services: React.FC = () => {
           ))}
         </div>
 
+        <div className="text-center mt-12 text-sm text-gray-500 max-w-4xl mx-auto">
+            <p>
+                <strong>Disclaimer:</strong> All investments are subject to market risks. The services and tools mentioned are for informational and planning purposes.
+                We recommend consulting with a qualified financial advisor to understand the risks and make informed decisions based on your individual financial situation.
+            </p>
+        </div>
+
         <div className="mt-16 bg-gradient-to-r from-blue-900 to-blue-800 p-8 rounded-2xl text-white text-center">
           <h3 className="text-2xl font-bold mb-4">Ready to Start Your Investment Journey?</h3>
           <p className="text-blue-200 mb-6 max-w-2xl mx-auto">

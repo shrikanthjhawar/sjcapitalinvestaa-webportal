@@ -1,12 +1,12 @@
 import React from 'react';
 import { ArrowRight, Shield, TrendingUp, Target } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Hero: React.FC = () => {
-  const scrollToCalculator = () => {
-    const element = document.getElementById('calculator');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+  const navigate = useNavigate();
+
+  const goToCalculators = () => {
+    navigate('/calculators');
   };
 
   return (
@@ -32,7 +32,7 @@ const Hero: React.FC = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <button
-              onClick={scrollToCalculator}
+              onClick={goToCalculators}
               className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-blue-900 px-8 py-4 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200 transform hover:scale-105 flex items-center justify-center gap-2"
             >
               Calculate Your SIP

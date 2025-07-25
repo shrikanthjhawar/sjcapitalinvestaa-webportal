@@ -7,26 +7,19 @@ const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Refactored for better readability and to avoid code duplication.
   const scrollToSection = (sectionId: string) => {
-    // If we are not on the home page, navigate there first.
+    const performScroll = () => {
+      const element = document.getElementById(sectionId);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    };
+
     if (location.pathname !== '/') {
       navigate('/');
-      // Use a timeout to allow navigation to complete and the page to render.
-      // A small delay like 100ms is usually sufficient.
-      setTimeout(() => {
-        const element = document.getElementById(sectionId);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
+      setTimeout(performScroll, 100);
     } else {
-      // If already on the home page, just scroll.
-      const element = document.getElementById(sectionId);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+      performScroll();
     }
-    // Close the mobile menu if it's open.
     setIsMenuOpen(false);
   };
 
@@ -39,63 +32,69 @@ const Header: React.FC = () => {
             <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 p-2 rounded-lg">
               <TrendingUp className="h-6 w-6 text-blue-900" />
             </div>
-            <span className="text-xl font-bold text-white">SJ Capital Investaa</span>
+            <span className="text-xl font-extrabold text-white tracking-tight">SJ Capital Investaa</span>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <button
               onClick={() => scrollToSection('hero')}
-              className="text-gray-300 hover:text-yellow-400 transition-colors duration-200"
+              className={`font-medium transition-colors duration-200 ${location.pathname === '/' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
             >
               Home
             </button>
             <button
               onClick={() => scrollToSection('about')}
-              className="text-gray-300 hover:text-yellow-400 transition-colors duration-200"
+              className="font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200"
             >
               About
             </button>
             <button
               onClick={() => scrollToSection('services')}
-              className="text-gray-300 hover:text-yellow-400 transition-colors duration-200"
+              className="font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200"
             >
               Services
             </button>
-            <button
-              onClick={() => scrollToSection('calculator')}
-              className="text-gray-300 hover:text-yellow-400 transition-colors duration-200"
+            <Link
+              to="/calculators"
+              className={`font-medium transition-colors duration-200 ${location.pathname.startsWith('/calculators') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
             >
-              SIP Calculator
-            </button>
+              Calculators
+            </Link>
+            <Link
+              to="/risk-profile"
+              className={`font-medium transition-colors duration-200 ${location.pathname.startsWith('/risk-profile') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
+            >
+              Risk Profile
+            </Link>
             <Link
               to="/blogs"
-              className="text-gray-300 hover:text-yellow-400 transition-colors duration-200"
+              className={`font-medium transition-colors duration-200 ${location.pathname.startsWith('/blogs') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
             >
               Blogs
             </Link>
-              <button
+            <button
               onClick={() => scrollToSection('booking-contact')}
-              className="text-gray-300 hover:text-yellow-400 transition-colors duration-200"
+              className="font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200"
             >
               Contact
             </button>
-            {/*<a 
-              href="https://demo.investwell.app/app/#/login" 
+            <a 
+              href="" 
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 border border-gray-600 hover:border-yellow-400 px-4 py-2 rounded-lg"
+              className="font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200"
             >
               Client Login
             </a>
             <a 
-              href="https://demo.investwell.app/app/#/login"
+              href=""
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-blue-900 px-6 py-2 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200 transform hover:scale-105"
+              className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-blue-900 px-5 py-2 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
               Sign Up
-            </a>*/}
+            </a>
           </nav>
 
           {/* Mobile menu button */}
@@ -113,54 +112,63 @@ const Header: React.FC = () => {
             <nav className="flex flex-col space-y-3">
               <button
                 onClick={() => scrollToSection('hero')}
-                className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
+                className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname === '/' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
               >
                 Home
               </button>
               <button
                 onClick={() => scrollToSection('about')}
-                className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
+                className="py-2 text-lg font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
               >
                 About
               </button>
               <button
                 onClick={() => scrollToSection('services')}
-                className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
+                className="py-2 text-lg font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
               >
                 Services
               </button>
-              <button
-                onClick={() => scrollToSection('calculator')}
-                className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
+              <Link
+                to="/calculators"
+                onClick={() => setIsMenuOpen(false)}
+                className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname.startsWith('/calculators') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
               >
-                SIP Calculator
-              </button>
+                Calculators
+              </Link>
+              <Link
+                to="/risk-profile"
+                onClick={() => setIsMenuOpen(false)}
+                className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname.startsWith('/risk-profile') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
+              >
+                Risk Profile
+              </Link>
               <Link
                 to="/blogs"
                 onClick={() => setIsMenuOpen(false)}
-                className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
+                className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname.startsWith('/blogs') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
               >
                 Blogs
               </Link>
               <button
                 onClick={() => scrollToSection('booking-contact')}
-                className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
+                className="py-2 text-lg font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
               >
                 Contact
               </button>
+              <div className="border-t border-blue-700 my-2"></div>
               <a 
-                href="https://demo.investwell.app/app/#/login"
+                href=""
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left border border-gray-600 hover:border-yellow-400 px-4 py-2 rounded-lg"
+                className="py-2 text-lg font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
               >
                 Client Login
               </a>
               <a 
-                href="https://demo.investwell.app/app/#/login"
+                href=""
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-blue-900 px-6 py-2 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200 text-left"
+                className="mt-2 text-center bg-gradient-to-r from-yellow-400 to-yellow-600 text-blue-900 px-6 py-3 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200"
               >
                 Sign Up
               </a>

@@ -2,42 +2,163 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import { Helmet } from 'react-helmet-async';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { getPostBySlug, Post } from '../utils/posts';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Calendar, User } from 'lucide-react';
+import { Calendar, User, Tag, Clock } from 'lucide-react';
+
+interface Heading {
+  id: string;
+  text: string;
+  level: number;
+}
+
+const TableOfContents: React.FC<{ headings: Heading[]; activeId: string }> = ({ headings, activeId }) => {
+  if (headings.length === 0) return null;
+
+  return (
+    <div className="p-6 bg-white rounded-lg shadow-md border border-gray-200">
+      <h3 className="text-base font-bold text-slate-900 mb-4">On this page</h3>
+      <ul className="space-y-2">
+        {headings.map((heading) => (
+          <li key={heading.id} className={`${heading.level === 3 ? 'ml-4' : ''}`}>
+            <a
+              href={`#${heading.id}`}
+              className={`block text-sm transition-colors duration-200 ${
+                activeId === heading.id
+                  ? 'text-blue-600 font-semibold'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+const BlogPostSkeleton: React.FC = () => (
+  <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8 animate-pulse">
+    <div className="lg:grid lg:grid-cols-12 lg:gap-12">
+      <article className="lg:col-span-9 bg-white p-8 lg:p-12 rounded-lg shadow-md">
+        {/* Title */}
+        <div className="h-10 bg-gray-300 rounded w-3/4 mb-6"></div>
+        {/* Meta */}
+        <div className="flex items-center space-x-4 mb-4">
+          <div className="h-5 bg-gray-200 rounded w-1/4"></div>
+          <div className="h-5 bg-gray-200 rounded w-1/4"></div>
+        </div>
+        {/* Tags */}
+        <div className="flex flex-wrap items-center gap-2 mb-8 border-b pb-4">
+          <div className="h-6 w-20 bg-gray-200 rounded-full"></div>
+          <div className="h-6 w-24 bg-gray-200 rounded-full"></div>
+          <div className="h-6 w-16 bg-gray-200 rounded-full"></div>
+        </div>
+        {/* Image placeholder */}
+        <div className="w-full h-96 bg-gray-300 rounded-lg mb-8"></div>
+        {/* Content */}
+        <div className="space-y-4">
+          <div className="h-4 bg-gray-200 rounded w-full"></div>
+          <div className="h-4 bg-gray-200 rounded w-full"></div>
+          <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+          <div className="h-4 bg-gray-200 rounded w-full mt-6"></div>
+          <div className="h-4 bg-gray-200 rounded w-full"></div>
+          <div className="h-4 bg-gray-200 rounded w-4/5"></div>
+          <div className="h-4 bg-gray-200 rounded w-full mt-6"></div>
+          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+        </div>
+      </article>
+      <aside className="hidden lg:block lg:col-span-3">
+        <div className="p-6 bg-white rounded-lg shadow-md border border-gray-200">
+          <div className="h-5 bg-gray-300 rounded w-1/2 mb-4"></div>
+          <div className="space-y-2">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-full"></div>
+            <div className="h-4 bg-gray-200 rounded w-5/6 ml-4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+);
 
 const BlogPostPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<Post | null>(null);
+  const [headings, setHeadings] = useState<Heading[]>([]);
+  const [activeHeading, setActiveHeading] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const slugify = (text: string) =>
+    text.toString().toLowerCase().trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w-]+/g, '')
+      .replace(/--+/g, '-');
+
   useEffect(() => {
-    if (slug) {
-      try {
-        const fetchedPost = getPostBySlug(slug);
-        if (fetchedPost) {
-          setPost(fetchedPost);
-        } else {
-          // Post with this slug not found
-          setPost(null);
+    setLoading(true);
+    const timer = setTimeout(() => {
+      if (slug) {
+        try {
+          const fetchedPost = getPostBySlug(slug);
+          setPost(fetchedPost || null);
+        } catch (e) {
+          console.error(`Failed to fetch post with slug "${slug}":`, e);
+          setError("Failed to load the blog post.");
         }
-      } catch (e) {
-        console.error(`Failed to fetch post with slug "${slug}":`, e);
-        setError("Failed to load the blog post.");
       }
       setLoading(false);
-    }
+    }, 500); // Simulate loading to show skeleton
+
+    return () => clearTimeout(timer);
   }, [slug]);
+
+  useEffect(() => {
+    if (!post) return;
+
+    const headingRegex = /^(##|###)\s(.+)/gm;
+    const matches = Array.from(post.content.matchAll(headingRegex));
+    const extractedHeadings: Heading[] = matches.map(match => {
+      const level = match[1].length;
+      const text = match[2].trim();
+      const id = slugify(text);
+      return { id, text, level };
+    });
+    setHeadings(extractedHeadings);
+  }, [post]);
+
+  useEffect(() => {
+    if (headings.length === 0) return;
+
+    const handleScroll = () => {
+      let current = '';
+      headings.forEach(h => {
+        const element = document.getElementById(h.id);
+        // 120px offset to account for sticky header and some buffer
+        if (element && element.getBoundingClientRect().top < 120) {
+          current = h.id;
+        }
+      });
+      setActiveHeading(current);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll(); // Set initial active heading
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [headings]);
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
-        <p className="text-xl">Loading post...</p>
-      </div>
+      <><Header /><main className="pt-20 bg-gray-50 min-h-screen"><BlogPostSkeleton /></main><Footer /></>
     );
   }
 
@@ -58,6 +179,11 @@ const BlogPostPage: React.FC = () => {
   if (!post) {
     return (
       <>
+        <Helmet>
+          <title>404 - Post Not Found | SJ Capital Investaa</title>
+          <meta name="description" content="The blog post you are looking for could not be found." />
+        </Helmet>
+
         <Header />
         <main className="pt-20 bg-gray-50 min-h-screen flex items-center justify-center">
           <div className="text-center">
@@ -73,50 +199,141 @@ const BlogPostPage: React.FC = () => {
     );
   }
 
+  const calculateReadingTime = (text: string) => {
+    const wordsPerMinute = 225;
+    const noOfWords = text.split(/\s/g).length;
+    const minutes = noOfWords / wordsPerMinute;
+    return Math.ceil(minutes);
+  };
+
   // At this point, TypeScript knows that `post` is not null, so we can safely access its properties.
   return (
     <>
+      <Helmet>
+        <title>{`${post.title} | SJ Capital Investaa`}</title>
+        <meta name="description" content={post.excerpt} />
+        <link rel="canonical" href={`https://www.sjcapital.in/blogs/${post.slug}`} />
+        <meta property="og:title" content={`${post.title} | SJ Capital Investaa`} />
+        <meta property="og:description" content={post.excerpt} />
+        <meta property="og:url" content={`https://www.sjcapital.in/blogs/${post.slug}`} />
+        <meta property="og:type" content="article" />
+        <meta property="article:published_time" content={post.date} />
+        <meta property="article:author" content={post.author} />
+        {post.tags.map(tag => (
+          <meta property="article:tag" content={tag} key={tag} />
+        ))}
+        {/* Add JSON-LD Structured Data for better SEO */}
+        <script type="application/ld+json">
+          {`
+            {
+              "@context": "https://schema.org",
+              "@type": "BlogPosting",
+              "headline": "${post.title}",
+              "description": "${post.excerpt}",
+              "datePublished": "${post.date}",
+              "author": {
+                "@type": "Person",
+                "name": "${post.author}"
+              }
+            }
+          `}
+        </script>
+      </Helmet>
       <Header />
       <main className="pt-20 bg-gray-50">
-        <div className="max-w-3xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <article className="bg-white p-8 rounded-lg shadow-md">
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-4">{post.title}</h1>
-            <div className="flex items-center space-x-4 text-sm text-gray-500 mb-8 border-b pb-4">
-              <div className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                <span>{new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+        <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+          <div className="lg:grid lg:grid-cols-12 lg:gap-12">
+            <article className="lg:col-span-9 bg-white p-8 lg:p-12 rounded-lg shadow-md">
+              <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4 font-sans">{post.title}</h1>
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 mb-4">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4" />
+                  <span>By {post.author}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <span>{new Date(post.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  <span>{calculateReadingTime(post.content)} min read</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4" />
-                <span>By {post.author}</span>
+
+              {post.tags && post.tags.length > 0 && (
+                <div className="flex flex-wrap items-center gap-2 mb-8 border-b border-gray-200 pb-4">
+                  <Tag className="h-4 w-4 text-gray-500" />
+                  {post.tags.map((tag) => (
+                    <Link
+                      key={tag}
+                      to={`/blogs?tag=${encodeURIComponent(tag)}`}
+                      className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full hover:bg-blue-200 transition-colors"
+                    >
+                      {tag}
+                    </Link>
+                  ))}
+                </div>
+              )}
+
+              {post.imageUrl && (
+                <div className="my-8">
+                  <img
+                    className="w-full rounded-lg shadow-lg object-cover"
+                    style={{ maxHeight: '500px' }}
+                    src={post.imageUrl}
+                    alt={post.title}
+                  />
+                </div>
+              )}
+
+              <div
+                className="
+                  prose prose-xl max-w-none
+                  prose-p:font-serif prose-p:leading-relaxed prose-p:text-slate-800 prose-p:mb-6
+                  prose-headings:font-sans prose-headings:font-bold prose-headings:text-slate-900 prose-headings:scroll-mt-24
+                  prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6
+                  prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-4
+                  prose-li:font-serif prose-li:my-3
+                  prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-a:font-semibold
+                  prose-blockquote:border-l-4 prose-blockquote:border-slate-300 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-slate-600
+                  prose-hr:my-8 prose-hr:border-gray-200
+                  prose-code:bg-slate-100 prose-code:rounded-md prose-code:px-1.5 prose-code:py-1 prose-code:font-mono
+                "
+              >
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm]}
+                  rehypePlugins={[rehypeRaw]}
+                  components={{
+                    h2: ({ node, ...props }) => <h2 id={slugify(String(props.children))} {...props} />,
+                    h3: ({ node, ...props }) => <h3 id={slugify(String(props.children))} {...props} />,
+                    code(props) {
+                      const {children, className, ...rest} = props;
+                      const match = /language-(\w+)/.exec(className || '');
+                      return match ? (
+                        <SyntaxHighlighter
+                          style={vscDarkPlus}
+                          language={match[1]}
+                          PreTag="div"
+                        >
+                          {String(children).replace(/\n$/, '')}
+                        </SyntaxHighlighter>
+                      ) : (
+                        <code {...rest} className={className}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                >{post.content}</ReactMarkdown>
               </div>
-            </div>
-            
-            <div className="prose prose-lg max-w-none">
-              <ReactMarkdown
-                remarkPlugins={[remarkGfm]}
-                components={{
-                  code({ node, inline, className, children, ...props }) {
-                    const match = /language-(\w+)/.exec(className || '');
-                    return !inline && match ? (
-                      <SyntaxHighlighter
-                        style={vscDarkPlus}
-                        language={match[1]}
-                        PreTag="div"
-                        {...props}
-                      >
-                        {String(children).replace(/\n$/, '')}
-                      </SyntaxHighlighter>
-                    ) : (
-                      <code className={className} {...props}>
-                        {children}
-                      </code>
-                    );
-                  },
-                }}
-              >{post.content}</ReactMarkdown>
-            </div>
-          </article>
+            </article>
+
+            <aside className="hidden lg:block lg:col-span-3">
+              <div className="sticky top-24">
+                <TableOfContents headings={headings} activeId={activeHeading} />
+              </div>
+            </aside>
+          </div>
 
           <div className="text-center mt-12">
             <Link to="/blogs" className="text-blue-600 hover:underline">
