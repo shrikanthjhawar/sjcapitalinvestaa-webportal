@@ -1,7 +1,5 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const PrivacyPolicyPage: React.FC = () => {
   return (
@@ -15,7 +13,6 @@ const PrivacyPolicyPage: React.FC = () => {
         <meta property="og:url" content="https://www.sjcapital.in/privacy-policy" />
         <meta property="og:type" content="website" />
       </Helmet>
-      <Header />
       <main className="pt-20 bg-gray-50">
         <div className="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
           <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-lg border border-gray-200">
@@ -90,7 +87,7 @@ const PrivacyPolicyPage: React.FC = () => {
           </div>
         </div>
       </main>
-      <Footer />
+    
     </>
   );
 };

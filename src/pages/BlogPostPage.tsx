@@ -7,8 +7,7 @@ import { Helmet } from 'react-helmet-async';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { getPostBySlug, Post } from '../utils/posts';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+
 import { Calendar, User, Tag, Clock } from 'lucide-react';
 
 interface Heading {
@@ -158,18 +157,17 @@ const BlogPostPage: React.FC = () => {
 
   if (loading) {
     return (
-      <><Header /><main className="pt-20 bg-gray-50 min-h-screen"><BlogPostSkeleton /></main><Footer /></>
+      <main className="pt-20 bg-gray-50 min-h-screen"><BlogPostSkeleton /></main>
     );
   }
 
   if (error) {
     return (
       <>
-        <Header />
         <main className="pt-20 bg-gray-50 min-h-screen flex items-center justify-center">
           <p className="text-center text-red-500 font-semibold">{error}</p>
         </main>
-        <Footer />
+       
       </>
     );
   }
@@ -184,7 +182,6 @@ const BlogPostPage: React.FC = () => {
           <meta name="description" content="The blog post you are looking for could not be found." />
         </Helmet>
 
-        <Header />
         <main className="pt-20 bg-gray-50 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h1 className="text-4xl font-bold text-red-600">404 - Post Not Found</h1>
@@ -194,7 +191,7 @@ const BlogPostPage: React.FC = () => {
             </Link>
           </div>
         </main>
-        <Footer />
+        
       </>
     );
   }
@@ -239,7 +236,6 @@ const BlogPostPage: React.FC = () => {
           `}
         </script>
       </Helmet>
-      <Header />
       <main className="pt-20 bg-gray-50">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-12 lg:gap-12">
@@ -342,7 +338,7 @@ const BlogPostPage: React.FC = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      
     </>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import CallToActionButtons from '../CallToActionButtons';
 import CalculatorInput from './CalculatorInput';
 
 const LumpsumCalculator: React.FC = () => {
@@ -76,6 +77,7 @@ const LumpsumCalculator: React.FC = () => {
           step={1}
           suffix="Years"
         />
+        <CallToActionButtons introText="Ready to make a lumpsum investment?" containerClassName="mt-4 pt-4" />
       </div>
 
       {/* Right side: Results and Chart */}

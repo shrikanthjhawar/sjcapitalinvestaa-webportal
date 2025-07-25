@@ -1,8 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getPosts } from '../utils/posts';
-import Header from '../components/Header';
-import Footer from '../components/Footer';
+
 import { Calendar, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 
 const POSTS_PER_PAGE = 6;
@@ -98,9 +97,9 @@ const BlogListPage: React.FC = () => {
   };
 
   return (
-    <>
-      <Header />
-      <main className="pt-20 bg-gray-50 min-h-screen">
+    // The Header is now handled by the main Layout component.
+    // The pt-20 class pushes content down to account for a fixed header.
+    <div className="pt-20 bg-gray-50 min-h-screen">
         <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">Our Blog</h1>
@@ -223,9 +222,7 @@ const BlogListPage: React.FC = () => {
             </div>
           )}
         </div>
-      </main>
-      <Footer />
-    </>
+    </div>
   );
 };
 

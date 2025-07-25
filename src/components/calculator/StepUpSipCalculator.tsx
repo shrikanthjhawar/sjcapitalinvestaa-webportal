@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import CallToActionButtons from '../CallToActionButtons';
 import CalculatorInput from './CalculatorInput';
 
 const StepUpSipCalculator: React.FC = () => {
@@ -105,6 +106,7 @@ const StepUpSipCalculator: React.FC = () => {
           step={1}
           suffix="Years"
         />
+        <CallToActionButtons introText="Ready to step-up your investments?" containerClassName="mt-4 pt-4" />
       </div>
 
       {/* Right side: Results and Chart */}

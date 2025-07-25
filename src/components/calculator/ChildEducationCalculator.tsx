@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import CallToActionButtons from '../CallToActionButtons';
 import CalculatorInput from './CalculatorInput';
 
 const ChildEducationCalculator: React.FC = () => {
@@ -74,6 +75,7 @@ const ChildEducationCalculator: React.FC = () => {
         <CalculatorInput label="Age for Higher Education" value={educationAge} onChange={setEducationAge} min={childAge + 1} max={25} step={1} suffix="Years" />
         <CalculatorInput label="Education Inflation Rate" value={inflationRate} onChange={setInflationRate} min={1} max={15} step={0.5} suffix="% p.a." />
         <CalculatorInput label="Expected Return Rate (p.a.)" value={expectedReturn} onChange={setExpectedReturn} min={1} max={20} step={0.5} suffix="%" />
+        <CallToActionButtons introText="Ready to plan for your child's future?" containerClassName="mt-4 pt-4" />
       </div>
 
       {/* Right side: Results and Chart */}

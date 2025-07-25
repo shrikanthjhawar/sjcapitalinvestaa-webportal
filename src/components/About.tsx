@@ -1,14 +1,6 @@
 import React from 'react';
-import { Users, BarChart3, Clock, Award } from 'lucide-react';
 
 const About: React.FC = () => {
-  const stats = [
-    { icon: Users, value: '10,000+', label: 'Happy Clients' },
-    { icon: BarChart3, value: '₹500Cr+', label: 'Assets Under Management' },
-    { icon: Clock, value: '15+', label: 'Years Experience' },
-    { icon: Award, value: '50+', label: 'Awards Won' }
-  ];
-
   return (
     <section id="about" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,10 +23,6 @@ const About: React.FC = () => {
               At SJ Capital Investaa, we believe that everyone deserves access to professional investment management. 
               Our mission is to democratize wealth creation by providing expert mutual fund advisory services that 
               help our clients build long-term financial security.
-            </p>
-            <p className="text-gray-700 mb-6 leading-relaxed">
-              With over 15 years of experience in the financial markets, our team combines deep market knowledge 
-              with innovative technology to deliver superior investment outcomes for our clients.
             </p>
           </div>
 
@@ -79,11 +67,6 @@ const About: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Stats Section */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-    
         </div>
       </div>
     </section>

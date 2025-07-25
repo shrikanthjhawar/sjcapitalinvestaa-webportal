@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X, TrendingUp } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -23,17 +25,42 @@ const Header: React.FC = () => {
     setIsMenuOpen(false);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      // Set scrolled state if user scrolls down more than 10px
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    // Only add scroll listener on the homepage
+    if (location.pathname === '/') {
+      window.addEventListener('scroll', handleScroll);
+      // Initial check
+      handleScroll();
+    } else {
+      // On other pages, header is always solid
+      setIsScrolled(true);
+    }
+
+    // Cleanup listener
+    return () => {
+      if (location.pathname === '/') {
+        window.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [location.pathname]);
+
   return (
-    <header className="fixed w-full top-0 z-50 bg-blue-900/95 backdrop-blur-md border-b border-blue-800">
+    <header className={`fixed w-full top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-blue-900/95 backdrop-blur-md border-b border-blue-800' : 'bg-transparent border-b border-transparent'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <div className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-2">
             <div className="bg-gradient-to-r from-yellow-400 to-yellow-600 p-2 rounded-lg">
               <TrendingUp className="h-6 w-6 text-blue-900" />
             </div>
-            <span className="text-xl font-extrabold text-white tracking-tight">SJ Capital Investaa</span>
-          </div>
+            <span className="text-xl font-extrabold text-white tracking-tight">
+              SJ Capital Investaa
+            </span>
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { BarChart, Shield, Zap, RefreshCw, ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { BarChart, Shield, Zap, RefreshCw, ArrowLeft, ArrowRight, CheckCircle2, AlertTriangle } from 'lucide-react';
+import CallToActionButtons from './CallToActionButtons';
+import usePersistentState from '../hooks/usePersistentState';
 
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -141,30 +142,41 @@ const COLORS = ['#0D47A1', '#F9A825', '#4CAF50', '#FF5722']; // Blue, Yellow, Gr
 const RADIAN = Math.PI / 180;
 
 const RiskProfileForm: React.FC = () => {
-  const navigate = useNavigate();
-  const [quizStarted, setQuizStarted] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({});
+  const [quizStarted, setQuizStarted] = usePersistentState<boolean>('riskProfile_quizStarted', false);
+  const [currentStep, setCurrentStep] = usePersistentState<number>('riskProfile_currentStep', 0);
+  const [answers, setAnswers] = usePersistentState<Answers>('riskProfile_answers', {});
   const [result, setResult] = useState<ProfileResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [chartLoading, setChartLoading] = useState(true);
 
   const [direction, setDirection] = useState(1);
 
-  const handleAnswerChange = (questionId: string, score: number) => {
-    setAnswers(prev => ({ ...prev, [questionId]: score }));
-    setError(null); // Clear error when user starts answering
-  };
-
-  const handleNext = () => {
-    if (answers[questions[currentStep].id]) {
-      setDirection(1);
-      if (currentStep < questions.length - 1) {
-        setCurrentStep(prev => prev + 1);
-        setError(null);
-      }
-    } else {
-      setError('Please select an option to continue.');
+  // Effect to handle chart loading state
+  React.useEffect(() => {
+    if (result) {
+      setChartLoading(true);
+      const timer = setTimeout(() => {
+        setChartLoading(false);
+      }, 500); // Corresponds to the result card animation duration
+      return () => clearTimeout(timer);
     }
+  }, [result]);
+
+  const handleAnswerChange = (questionId: string, score: number) => {
+    const newAnswers = { ...answers, [questionId]: score };
+    setAnswers(newAnswers);
+    setError(null); // Clear error when user starts answering
+
+    // Use a short timeout to let the user see their selection before advancing
+    setTimeout(() => {
+      if (currentStep < questions.length - 1) {
+        setDirection(1);
+        setCurrentStep(prev => prev + 1);
+      } else {
+        // It's the last question, so calculate the result
+        calculateAndSetResult(newAnswers);
+      }
+    }, 300);
   };
 
   const handleBack = () => {
@@ -175,9 +187,8 @@ const RiskProfileForm: React.FC = () => {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (Object.keys(answers).length < questions.length) {
+  const calculateAndSetResult = (finalAnswers: Answers) => {
+    if (Object.keys(finalAnswers).length < questions.length) {
       setError('Please answer all questions before submitting.');
       return;
     }
@@ -186,7 +197,7 @@ const RiskProfileForm: React.FC = () => {
     let totalWeight = 0;
 
     questions.forEach(question => {
-      const score = answers[question.id];
+      const score = finalAnswers[question.id];
       const weight = question.weight || 1;
       weightedScoreSum += score * weight;
       totalWeight += weight;
@@ -231,128 +242,132 @@ const RiskProfileForm: React.FC = () => {
     setAnswers({});
     setResult(null);
     setError(null);
+    setChartLoading(true);
     setDirection(1);
-  };
-
-  const handleBookConsultation = () => {
-    navigate('/');
-    setTimeout(() => {
-      const element = document.getElementById('booking-contact');
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
+    // Also clear the persisted state so the user can start fresh
+    setQuizStarted(false);
+    setCurrentStep(0);
+    setAnswers({});
   };
 
   const progressPercentage = quizStarted ? ((currentStep + 1) / questions.length) * 100 : 0;
 
   return (
-    <div id="risk-profiler" className="bg-white py-16 sm:py-24">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div id="risk-profiler" className="bg-gradient-to-br from-gray-50 to-blue-50 py-12 sm:py-16">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">Discover Your Investor Profile</h2>
           <p className="mt-4 text-lg text-gray-600">Answer a few questions to understand your risk tolerance and get personalized insights.</p>
         </div>
 
-        <div className="bg-gray-50 border border-gray-200 rounded-xl shadow-lg p-6 sm:p-10">
+        <div className="bg-white border border-gray-200 rounded-xl shadow-lg p-6 sm:p-10">
           <AnimatePresence mode="wait">
             {quizStarted && result ? (
               <motion.div
-    key="result"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-            >
-              <div className="text-center mb-8">
-                <result.Icon className="mx-auto h-16 w-16 text-blue-600" />
-                <h3 className="mt-4 text-lg font-semibold text-gray-800">Your Investor Profile is</h3>
-                <p className="mt-1 text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-900 to-yellow-600">{result.profile}</p>
-                <p className="mt-2 text-sm text-gray-500">Based on a score of {result.score}</p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center bg-white p-6 rounded-lg border">
-                {/* Left side: Recommendation */}
-                <div>
-                  <h4 className="font-bold text-lg text-gray-900 mb-3">Recommended Strategy</h4>
-                  <p className="text-gray-600 mb-6">{result.recommendation}</p>
-                  <h4 className="font-bold text-lg text-gray-900 mb-3">Suggested Asset Allocation</h4>
-                  <ul className="space-y-2">
-                    {result.allocation.map((alloc, index) => (
-                      <li key={alloc.name} className="flex items-center">
-                        <span className="h-4 w-4 rounded-full mr-3" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
-                        <span className="font-medium text-gray-700">{alloc.name}:</span>
-                        <span className="ml-auto font-bold text-gray-800">{alloc.value}%</span>
-                      </li>
-                    ))}
-                  </ul>
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className=""
+              >
+                <div className="text-center mb-6">
+                  <result.Icon className="mx-auto h-16 w-16 text-blue-600" aria-hidden="true" />
+                  <h3 className="mt-3 text-base font-semibold text-gray-800">Your Investor Profile is</h3>
+                  <p className="mt-1 text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-900 to-yellow-600">{result.profile}</p>
+                  <p className="mt-2 text-xs text-gray-500">Based on a score of {result.score}</p>
                 </div>
 
-                {/* Right side: Chart */}
-                <div className="w-full h-64">
-                  <ResponsiveContainer>
-                    <PieChart>
-                      <Pie
-                        data={result.allocation}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        nameKey="name"
-                        label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-                          // Add a guard to prevent rendering if essential props are missing
-                          if (midAngle === undefined || percent === undefined || innerRadius === undefined || outerRadius === undefined) {
-                            return null;
-                          }
-                          const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                          const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                          const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                          return (
-                            <text x={x} y={y} fill="white" textAnchor={x > cx ? 'start' : 'end'} dominantBaseline="central" fontSize="14" fontWeight="bold">
-                              {`${(percent * 100).toFixed(0)}%`}
-                            </text>
-                          );
-                        }}
-                      >
-                        {result.allocation.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(value: number) => `${value}%`} />
-                      <Legend iconType="circle" />
-                    </PieChart>
-                  </ResponsiveContainer>
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-8 items-center mt-6">
+                  {/* Left side: Recommendation */}
+                  <div className="md:col-span-3">
+                      <h4 className="font-bold text-base text-gray-900 mb-2">Recommended Strategy</h4>
+                      <p className="text-gray-600 mb-4 leading-normal text-xs">{result.recommendation}</p>
+                      <h4 className="font-bold text-base text-gray-900 mb-2">Suggested Asset Allocation</h4>
+                      <ul className="space-y-2">
+                      {result.allocation.map((alloc, index) => (
+                          <li key={alloc.name} className="flex items-center text-sm">
+                          <span className="h-3 w-3 rounded-full mr-3" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
+                          <span className="font-medium text-gray-700">{alloc.name}:</span>
+                          <span className="ml-auto font-bold text-gray-800">{alloc.value}%</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Right side: Chart */}
+                  <div className="md:col-span-2 w-full h-64 flex items-center justify-center">
+                    {chartLoading ? (
+                      <div className="flex flex-col items-center justify-center text-gray-500">
+                        <svg className="animate-spin h-8 w-8 text-blue-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <p>Generating Chart...</p>
+                      </div>
+                    ) : (
+                      <ResponsiveContainer>
+                        <PieChart>
+                          <Pie
+                            isAnimationActive={true}
+                            animationDuration={800}
+                            data={result.allocation}
+                            cx="50%"
+                            cy="50%"
+                            labelLine={false}
+                            outerRadius={80}
+                            innerRadius={50}
+                            fill="#8884d8"
+                            dataKey="value"
+                            nameKey="name"
+                            label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
+                              // Add a guard to prevent rendering if essential props are missing
+                              if (midAngle === undefined || percent === undefined || innerRadius === undefined || outerRadius === undefined) {
+                                return null;
+                              }
+                              const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+                              const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                              const y = cy + radius * Math.sin(-midAngle * RADIAN);
+                              return (
+                                  <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize="14" fontWeight="bold">
+                                  {`${(percent * 100).toFixed(0)}%`}
+                                </text>
+                              );
+                            }}
+                          >
+                            {result.allocation.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="#fff" strokeWidth={2} />
+                            ))}
+                          </Pie>
+                          <Tooltip formatter={(value: number) => `${value}%`} />
+                          <Legend iconType="circle" />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    )}
                 </div>
               </div>
-              <p className="text-xs text-gray-500 mt-6 text-center">
-                Disclaimer: This risk profile is for informational purposes only and does not constitute financial advice. Please consult with a certified financial advisor before making any investment decisions.
-              </p>
-              <div className="mt-10 text-center">
-                <h4 className="text-lg font-semibold text-gray-800 mb-4">Ready for the next step?</h4>
-                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                  <a
-                    href="https://demo.login"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-yellow-400 text-blue-900 font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors transform hover:scale-105 shadow-md"
-                  >
-                    Invest Now
-                  </a>
-                  <button
-                    onClick={handleBookConsultation}
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border-2 border-blue-600 text-blue-600 font-bold py-3 px-6 rounded-lg hover:bg-blue-600 hover:text-white transition-colors"
-                  >
-                    Connect with an Advisor
-                  </button>
+
+                <CallToActionButtons containerClassName="mt-8" introText="Ready to take the next step based on your profile?" />
+
+                <div className="mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
+                <div className="flex">
+                  <div className="flex-shrink-0 pt-0.5">
+                    <AlertTriangle className="h-5 w-5 text-yellow-500" aria-hidden="true" />
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm font-bold text-yellow-800">Disclaimer</p>
+                    <p className="mt-1 text-xs leading-relaxed text-yellow-700">
+                      This risk profile is for informational purposes only and does not constitute financial advice. Please consult with a certified financial advisor before making any investment decisions.
+                    </p>
+                  </div>
                 </div>
+              </div>
+                <div className="text-center mt-6">
                 <button
-                  onClick={handleReset}
-                  className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-800 font-medium transition-colors text-sm mt-6"
-                >
-                  <RefreshCw className="h-4 w-4" />
-                  Take the Quiz Again
+                    onClick={handleReset}
+                    className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-800 font-medium transition-colors text-xs"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                    Take the Quiz Again
                 </button>
               </div>
             </motion.div>
@@ -377,7 +392,7 @@ const RiskProfileForm: React.FC = () => {
               </button>
             </motion.div>
           ) : (
-            <form onSubmit={handleSubmit}>
+            <div>
               <motion.div
                 key={currentStep}
                 custom={direction}
@@ -390,28 +405,28 @@ const RiskProfileForm: React.FC = () => {
               >
                 {/* Progress Bar */}
                 <div className="mb-8">
-                <div className="flex justify-between mb-2">
-                  <span className="text-base font-medium text-gray-600">Question {currentStep + 1} of {questions.length}</span>
-                  <span className="text-sm font-medium text-gray-600">{Math.round(progressPercentage)}%</span>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-base font-medium text-gray-600">Question {currentStep + 1} of {questions.length}</span>
+                    <span className="text-sm font-medium text-gray-600">{Math.round(progressPercentage)}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2.5">
+                    <div className="bg-yellow-400 h-2.5 rounded-full transition-all duration-500" style={{ width: `${progressPercentage}%` }}></div>
+                  </div>
                 </div>
-                <div className="w-full bg-gray-200 rounded-full h-2.5">
-                  <div className="bg-yellow-400 h-2.5 rounded-full transition-all duration-500" style={{ width: `${progressPercentage}%` }}></div>
-                </div>
-              </div>
 
                 {/* Current Question */}
                 <div className="text-center min-h-[84px] sm:min-h-[56px] flex items-center justify-center">
-                  <p className="text-xl font-semibold text-gray-900 mb-6 sm:text-2xl">
-                  {questions[currentStep].text}
-                </p>
-              </div>
+                  <p className="text-lg font-semibold text-gray-900 mb-6 sm:text-xl">
+                    {questions[currentStep].text}
+                  </p>
+                </div>
 
               {/* Options */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 min-h-[160px]">
                 {questions[currentStep].options.map((option) => (
                   <label
                     key={option.score}
-                    className={`relative flex items-center justify-center text-center p-5 rounded-lg cursor-pointer transition-all duration-200 border-2 ${
+                    className={`relative flex items-center justify-center text-center p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${
                       answers[questions[currentStep].id] === option.score
                         ? 'bg-blue-600 border-blue-700 text-white shadow-lg'
                         : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-blue-400'
@@ -425,7 +440,7 @@ const RiskProfileForm: React.FC = () => {
                       onChange={() => handleAnswerChange(questions[currentStep].id, option.score)}
                       className="sr-only" // Hide the actual radio button
                     />
-                    <span className="font-medium">{option.text}</span>
+                    <span className="font-medium text-sm">{option.text}</span>
                     {answers[questions[currentStep].id] === option.score && (
                       <motion.div
                         layoutId="check"
@@ -441,39 +456,25 @@ const RiskProfileForm: React.FC = () => {
                 ))}
               </div>
 
-                <div className="min-h-[24px] text-center">
+                <div className="min-h-[24px] text-center mt-4">
                   {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
                 </div>
 
               {/* Navigation */}
               <div className="flex justify-between items-center pt-4 mt-4 border-t border-gray-200">
-                <button
-                  type="button"
-                  onClick={handleBack}
-                  className={`inline-flex items-center gap-2 text-gray-600 font-bold py-3 px-6 rounded-lg hover:text-gray-900 transition-colors ${
-                    currentStep === 0 ? 'invisible' : 'visible'
-                  }`}
-                >
-                  <ArrowLeft className="h-5 w-5" /> Back
-                </button>
-
-                {currentStep < questions.length - 1 ? (
-                  <button type="button" onClick={handleNext} className="inline-flex items-center gap-2 bg-yellow-400 text-blue-900 font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors transform hover:scale-105">
-                    Next <ArrowRight className="h-5 w-5" />
-                  </button>
-                ) : (
                   <button
-                    type="submit"
-                    className="bg-yellow-400 text-blue-900 font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-colors transform hover:scale-105"
+                    type="button"
+                    onClick={handleBack}
+                    className={`inline-flex items-center gap-2 text-gray-600 font-bold py-3 px-6 rounded-lg hover:text-gray-900 transition-colors ${
+                      currentStep === 0 ? 'invisible' : 'visible'
+                    }`}
                   >
-                    View My Profile
+                    <ArrowLeft className="h-5 w-5" /> Back
                   </button>
-                )}
-              
               </div>
 
               </motion.div>
-            </form>
+            </div>
           )}
         </AnimatePresence>
       </div>

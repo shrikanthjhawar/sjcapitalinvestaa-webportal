@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import CallToActionButtons from '../CallToActionButtons';
 import CalculatorInput from './CalculatorInput';
 
 const GoalSipCalculator: React.FC = () => {
@@ -78,6 +79,7 @@ const GoalSipCalculator: React.FC = () => {
           step={0.5}
           suffix="%"
         />
+        <CallToActionButtons introText="Ready to achieve your financial goals?" containerClassName="mt-4 pt-4" />
       </div>
 
       {/* Right side: Results and Chart */}
