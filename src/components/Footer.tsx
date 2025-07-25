@@ -1,14 +1,8 @@
 import React from 'react';
 import { Phone, Mail, MapPin, TrendingUp, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Footer: React.FC = () => {
-  const quickLinks = [
-    { name: 'Home', href: '#hero' },
-    { name: 'About Us', href: '#about' },
-    { name: 'Services', href: '#services' },
-    { name: 'SIP Calculator', href: '#calculator' },
-    { name: 'Contact', href: '#contact' }
-  ];
 
   const services = [
     'Mutual Fund Advisory',
@@ -19,10 +13,21 @@ const Footer: React.FC = () => {
     'Goal-Based Investing'
   ];
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    // This function now handles navigation from other pages back to home sections
+    const performScroll = () => {
+      const element = document.getElementById(sectionId);
+      element?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    if (location.pathname !== '/') {
+      navigate('/');
+      setTimeout(performScroll, 100);
+    } else {
+      performScroll();
     }
   };
 
@@ -63,16 +68,23 @@ const Footer: React.FC = () => {
           <div>
             <h3 className="text-lg font-semibold mb-6 text-yellow-400">Quick Links</h3>
             <ul className="space-y-3">
-              {quickLinks.map((link, index) => (
-                <li key={index}>
-                  <button
-                    onClick={() => scrollToSection(link.href.substring(1))}
-                    className="text-blue-200 hover:text-yellow-400 transition-colors duration-200"
-                  >
-                    {link.name}
-                  </button>
-                </li>
-              ))}
+              <li><button onClick={() => scrollToSection('hero')} className="text-blue-200 hover:text-yellow-400 transition-colors duration-200">Home</button></li>
+              <li><button onClick={() => scrollToSection('about')} className="text-blue-200 hover:text-yellow-400 transition-colors duration-200">About Us</button></li>
+              <li><button onClick={() => scrollToSection('services')} className="text-blue-200 hover:text-yellow-400 transition-colors duration-200">Services</button></li>
+              <li>
+                <Link to="/calculators" className="text-blue-200 hover:text-yellow-400 transition-colors duration-200">
+                  Calculators
+                </Link>
+              </li>
+              <li>
+                <Link to="/blogs" className="text-blue-200 hover:text-yellow-400 transition-colors duration-200">
+                  Blogs
+                </Link>
+              </li>
+              <li>
+                <button onClick={() => scrollToSection('booking-contact')} className="text-blue-200 hover:text-yellow-400 transition-colors duration-200">Contact</button>
+              </li>
+
             </ul>
           </div>
 
@@ -139,15 +151,17 @@ const Footer: React.FC = () => {
               © 2025 SJ Capital Investaa. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-blue-200 hover:text-yellow-400 text-sm transition-colors duration-200">
+              <Link to="/privacy-policy" className="text-blue-200 hover:text-yellow-400 text-sm transition-colors duration-200">
                 Privacy Policy
-              </a>
+              </Link>
             </div>
           </div>
         </div>
       </div>
-      <div>
-        Risk Factors – Investments in Mutual Funds are subject to Market Risks. Read all scheme-related documents carefully before investing. Mutual Fund Schemes do not assure or guarantee any returns. Past performances of any Mutual Fund Scheme may or may not be sustained in the future. There is no guarantee that the investment objective of any suggested scheme shall be achieved. All existing and prospective investors are advised to check and evaluate the Exit loads and other cost structures (TER) applicable at the time of making the investment before finalizing any investment decision for Mutual Funds schemes. We deal in Regular Plans only for Mutual Fund Schemes and earn a Trailing Commission on client investments.
+      <div className="bg-blue-950/50 text-center p-6">
+        <p className="text-xs text-blue-300 leading-relaxed max-w-5xl mx-auto">
+          <strong>Risk Factors:</strong> Investments in Mutual Funds are subject to market risks. Read all scheme-related documents carefully before investing. Mutual Fund schemes do not assure or guarantee any returns. Past performances of any Mutual Fund Scheme may or may not be sustained in the future. There is no guarantee that the investment objective of any suggested scheme shall be achieved. All existing and prospective investors are advised to check and evaluate the Exit loads and other cost structures (TER) applicable at the time of making the investment before finalizing any investment decision for Mutual Funds schemes. We deal in Regular Plans only for Mutual Fund Schemes and earn a Trailing Commission on client investments.
+        </p>
       </div>
     </footer>
   );

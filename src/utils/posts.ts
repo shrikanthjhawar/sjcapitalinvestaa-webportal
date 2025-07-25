@@ -7,6 +7,7 @@ export interface Post {
   author: string;
   excerpt: string;
   content: string;
+  tags: string[];
 }
 
 // This function uses Vite's eager import.meta.glob to get all markdown files
@@ -39,6 +40,7 @@ function loadPosts(): Post[] {
         author: attributes.author || 'SJ Capital Investaa', // Provide a default author
         excerpt: attributes.excerpt,
         content: body,
+        tags: attributes.tags || [],
       });
     }
     // Sort posts by date in descending order (newest first)

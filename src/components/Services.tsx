@@ -1,5 +1,6 @@
 import React from 'react';
 import { PiggyBank, TrendingUp, Shield, Target, Calculator, HeadphonesIcon } from 'lucide-react';
+import CallToActionButtons from './CallToActionButtons';
 
 const Services: React.FC = () => {
   const services = [
@@ -76,19 +77,19 @@ const Services: React.FC = () => {
           ))}
         </div>
 
+        <div className="text-center mt-12 text-sm text-gray-500 max-w-4xl mx-auto">
+            <p>
+                <strong>Disclaimer:</strong> All investments are subject to market risks. The services and tools mentioned are for informational and planning purposes.
+                We recommend consulting with a qualified financial advisor to understand the risks and make informed decisions based on your individual financial situation.
+            </p>
+        </div>
+
         <div className="mt-16 bg-gradient-to-r from-blue-900 to-blue-800 p-8 rounded-2xl text-white text-center">
           <h3 className="text-2xl font-bold mb-4">Ready to Start Your Investment Journey?</h3>
           <p className="text-blue-200 mb-6 max-w-2xl mx-auto">
             Join thousands of satisfied investors who have achieved their financial goals through our expert mutual fund advisory services.
           </p>
-        {/*}  <a 
-            href="https://demo.investwell.app/app/#/login"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-block bg-gradient-to-r from-yellow-400 to-yellow-600 text-blue-900 px-8 py-4 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200 transform hover:scale-105"
-          >
-            Get Started Today
-          </a>*/}
+          <CallToActionButtons introText="" containerClassName="mt-0 pt-0 border-none" />
         </div>
       </div>
     </section>
