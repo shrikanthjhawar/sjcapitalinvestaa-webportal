@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BarChart3, Landmark, UserCheck, Wallet, ShieldCheck, ArrowRight, TrendingUp, GraduationCap, Package, Goal } from 'lucide-react';
+import { BarChart3, Landmark, UserCheck, Wallet, ShieldCheck, GraduationCap, Package, Goal, PiggyBank } from 'lucide-react';
 
 const calculatorList = [
   {
@@ -11,6 +11,14 @@ const calculatorList = [
     bgColor: 'bg-blue-50',
     iconColor: 'text-blue-600',
   },
+    {
+    title: 'SWP Calculator',
+    description: 'Plan your Systematic Withdrawal Plan for a regular income stream.',
+    link: '/calculators/swp',
+    Icon: Wallet,
+    bgColor: 'bg-yellow-50',
+    iconColor: 'text-yellow-600',
+  },
   {
     title: 'Lumpsum Calculator',
     description: 'Calculate the future value of a one-time lumpsum investment.',
@@ -20,12 +28,12 @@ const calculatorList = [
     iconColor: 'text-indigo-600',
   },
   {
-    title: 'Step-up SIP Calculator',
-    description: 'Calculate returns for SIPs with periodic (annual) top-ups.',
-    link: '/calculators/step-up-sip',
-    Icon: TrendingUp,
-    bgColor: 'bg-teal-50',
-    iconColor: 'text-teal-600',
+    title: 'FD/RD Calculator',
+    description: 'Calculate returns for Fixed and Recurring Deposits.',
+    link: '/calculators/fd-rd',
+    Icon: PiggyBank,
+    bgColor: 'bg-cyan-50',
+    iconColor: 'text-cyan-600',
   },
   {
     title: 'Goal SIP Calculator',
@@ -59,14 +67,7 @@ const calculatorList = [
     bgColor: 'bg-purple-50',
     iconColor: 'text-purple-600',
   },
-  {
-    title: 'SWP Calculator',
-    description: 'Plan your Systematic Withdrawal Plan for a regular income stream.',
-    link: '/calculators/swp',
-    Icon: Wallet,
-    bgColor: 'bg-yellow-50',
-    iconColor: 'text-yellow-600',
-  },
+
   {
     title: 'Risk Profiler',
     description: 'Discover your investor profile to make informed investment decisions.',
@@ -80,24 +81,23 @@ const calculatorList = [
 const CalculatorsPage: React.FC = () => {
   return (
     <div className="bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl lg:text-6xl">
+          <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">
             Financial Calculators
           </h1>
-          <p className="mt-5 max-w-2xl mx-auto text-xl text-gray-500">
+          <p className="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
             Empower your financial decisions with our suite of powerful and easy-to-use calculators.
           </p>
         </div>
 
-        <div className="mt-16 grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
           {calculatorList.map((calculator) => (
             <Link key={calculator.title} to={calculator.link} className="group block bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-              <div className="p-6 sm:p-8">
+              <div className="p-6">
                 <div className={`flex items-center justify-center h-12 w-12 rounded-lg ${calculator.bgColor}`}><calculator.Icon className={`h-6 w-6 ${calculator.iconColor}`} aria-hidden="true" /></div>
-                <h3 className="mt-6 text-xl font-bold text-gray-900">{calculator.title}</h3>
-                <p className="mt-2 text-base text-gray-600">{calculator.description}</p>
-                <p className="mt-6 font-semibold text-blue-600 flex items-center">Calculate Now <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" /></p>
+                <h3 className="mt-4 text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{calculator.title}</h3>
+                <p className="mt-1 text-sm text-gray-600">{calculator.description}</p>
               </div>
             </Link>
           ))}

@@ -8,9 +8,9 @@ import LumpsumCalculator from '../components/calculator/LumpsumCalculator';
 import GoalSipCalculator from '../components/calculator/GoalSipCalculator';
 import ChildEducationCalculator from '../components/calculator/ChildEducationCalculator';
 import RetirementCalculator from '../components/calculator/RetirementCalculator';
-import StepUpSipCalculator from '../components/calculator/StepUpSipCalculator';
 import SwpCalculator from '../components/calculator/SwpCalculator';
 import EmiCalculator from '../components/calculator/EmiCalculator';
+import FdRdCalculator from '../components/calculator/FdRdCalculator';
 import CalculatorDisclaimer from '../components/calculator/CalculatorDisclaimer';
 import NotFoundPage from './NotFoundPage';
 
@@ -26,11 +26,6 @@ const calculatorMap = {
     component: LumpsumCalculator,
     description: 'Calculate the future value of a one-time lumpsum investment.'
   },
-  'step-up-sip': {
-    name: 'Step-up SIP Calculator',
-    component: StepUpSipCalculator,
-    description: 'Calculate returns for SIPs with periodic (annual) top-ups.'
-  },
   'goal-sip': {
     name: 'Goal SIP Calculator',
     component: GoalSipCalculator,
@@ -45,6 +40,11 @@ const calculatorMap = {
     name: 'EMI Calculator',
     component: EmiCalculator,
     description: 'Calculate your Equated Monthly Installment (EMI) for loans.'
+  },
+  'fd-rd': {
+    name: 'FD/RD Calculator',
+    component: FdRdCalculator,
+    description: 'Calculate the maturity value and interest earned on your Fixed and Recurring Deposits.'
   },
   'retirement': {
     name: 'Retirement Calculator',

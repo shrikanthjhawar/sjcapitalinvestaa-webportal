@@ -2,6 +2,24 @@ import React, { useState, useEffect } from 'react';
 import { Menu, X, TrendingUp } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 
+const navLinks = [
+  { name: 'Home', type: 'scroll', targetId: 'hero' },
+  { name: 'About', type: 'scroll', targetId: 'about' },
+  { name: 'Services', type: 'scroll', targetId: 'services' },
+  { name: 'Calculators', type: 'link', path: '/calculators' },
+  { name: 'Risk Profile', type: 'link', path: '/risk-profile' },
+  { name: 'Blogs', type: 'link', path: '/blogs' },
+  { name: 'Contact', type: 'scroll', targetId: 'booking-contact' },
+];
+
+const externalLinks = [
+    { name: 'Client Login', href: '' }, // Add your client login URL here
+];
+
+const ctaLinks = [
+    { name: 'Sign Up', href: '' }, // Add your sign up URL here
+];
+
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -64,64 +82,31 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => scrollToSection('hero')}
-              className={`font-medium transition-colors duration-200 ${location.pathname === '/' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
-            >
-              Home
-            </button>
-            <button
-              onClick={() => scrollToSection('about')}
-              className="font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200"
-            >
-              About
-            </button>
-            <button
-              onClick={() => scrollToSection('services')}
-              className="font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200"
-            >
-              Services
-            </button>
-            <Link
-              to="/calculators"
-              className={`font-medium transition-colors duration-200 ${location.pathname.startsWith('/calculators') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
-            >
-              Calculators
-            </Link>
-            <Link
-              to="/risk-profile"
-              className={`font-medium transition-colors duration-200 ${location.pathname.startsWith('/risk-profile') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
-            >
-              Risk Profile
-            </Link>
-            <Link
-              to="/blogs"
-              className={`font-medium transition-colors duration-200 ${location.pathname.startsWith('/blogs') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
-            >
-              Blogs
-            </Link>
-            <button
-              onClick={() => scrollToSection('booking-contact')}
-              className="font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200"
-            >
-              Contact
-            </button>
-            <a 
-              href="" 
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200"
-            >
-              Client Login
-            </a>
-            <a 
-              href=""
+            {navLinks.map(link => (
+              link.type === 'scroll' ? (
+                <button key={link.name} onClick={() => scrollToSection(link.targetId)} className={`font-medium transition-colors duration-200 ${location.pathname === '/' ? 'text-gray-300 hover:text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}>
+                  {link.name}
+                </button>
+              ) : (
+                <Link key={link.name} to={link.path!} className={`font-medium transition-colors duration-200 ${location.pathname.startsWith(link.path!) ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}>
+                  {link.name}
+                </Link>
+              )
+            ))}
+            {externalLinks.map(link => (
+              <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" className="font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200">
+                {link.name}
+              </a>
+            ))}
+            {ctaLinks.map(link => (
+              <a key={link.name} href={link.href}
               target="_blank"
               rel="noopener noreferrer"
               className="bg-gradient-to-r from-yellow-400 to-yellow-600 text-blue-900 px-5 py-2 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
             >
-              Sign Up
-            </a>
+                {link.name}
+              </a>
+            ))}
           </nav>
 
           {/* Mobile menu button */}
@@ -137,68 +122,32 @@ const Header: React.FC = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-blue-800 rounded-lg mt-2 p-4">
             <nav className="flex flex-col space-y-3">
-              <button
-                onClick={() => scrollToSection('hero')}
-                className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname === '/' ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
-              >
-                Home
-              </button>
-              <button
-                onClick={() => scrollToSection('about')}
-                className="py-2 text-lg font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
-              >
-                About
-              </button>
-              <button
-                onClick={() => scrollToSection('services')}
-                className="py-2 text-lg font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
-              >
-                Services
-              </button>
-              <Link
-                to="/calculators"
-                onClick={() => setIsMenuOpen(false)}
-                className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname.startsWith('/calculators') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
-              >
-                Calculators
-              </Link>
-              <Link
-                to="/risk-profile"
-                onClick={() => setIsMenuOpen(false)}
-                className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname.startsWith('/risk-profile') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
-              >
-                Risk Profile
-              </Link>
-              <Link
-                to="/blogs"
-                onClick={() => setIsMenuOpen(false)}
-                className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname.startsWith('/blogs') ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}
-              >
-                Blogs
-              </Link>
-              <button
-                onClick={() => scrollToSection('booking-contact')}
-                className="py-2 text-lg font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
-              >
-                Contact
-              </button>
+              {navLinks.map(link => (
+                link.type === 'scroll' ? (
+                  <button key={link.name} onClick={() => scrollToSection(link.targetId)} className="py-2 text-lg font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left">
+                    {link.name}
+                  </button>
+                ) : (
+                  <Link key={link.name} to={link.path!} onClick={() => setIsMenuOpen(false)} className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname.startsWith(link.path!) ? 'text-yellow-400' : 'text-gray-300 hover:text-yellow-400'}`}>
+                    {link.name}
+                  </Link>
+                )
+              ))}
               <div className="border-t border-blue-700 my-2"></div>
-              <a 
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                className="py-2 text-lg font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left"
-              >
-                Client Login
-              </a>
-              <a 
-                href=""
+              {externalLinks.map(link => (
+                <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" className="py-2 text-lg font-medium text-gray-300 hover:text-yellow-400 transition-colors duration-200 text-left">
+                  {link.name}
+                </a>
+              ))}
+              {ctaLinks.map(link => (
+                <a key={link.name} href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-2 text-center bg-gradient-to-r from-yellow-400 to-yellow-600 text-blue-900 px-6 py-3 rounded-lg font-semibold hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200"
               >
-                Sign Up
-              </a>
+                  {link.name}
+                </a>
+              ))}
             </nav>
           </div>
         )}
