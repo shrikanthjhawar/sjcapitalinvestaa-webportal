@@ -8,6 +8,7 @@ import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import RiskProfilePage from './pages/RiskProfilePage';
 import Layout from './components/Layout';
 import ScrollToTop from './components/ScrollToTop';
+import TermsOfServicePage from './pages/TermsOfServicePage';
 import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/blogs/:slug" element={<BlogPostPage />} />
           <Route path="/risk-profile" element={<RiskProfilePage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms-of-service" element={<TermsOfServicePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>

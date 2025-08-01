@@ -7,14 +7,14 @@ import { Calendar, ChevronLeft, ChevronRight, Search } from 'lucide-react';
 const POSTS_PER_PAGE = 6;
 
 const BlogPostCardSkeleton: React.FC = () => (
-  <div className="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col animate-pulse border border-gray-200">
-    <div className="w-full h-48 bg-gray-300"></div>
+  <div className="bg-white rounded-xl shadow-md overflow-hidden h-full flex flex-col animate-pulse border border-primary/10">
+    <div className="w-full h-48 bg-primary/10"></div>
     <div className="p-6 flex-grow flex flex-col">
-      <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-      <div className="h-6 bg-gray-300 rounded w-3/4 mb-4"></div>
+      <div className="h-4 bg-primary/5 rounded w-1/2 mb-4"></div>
+      <div className="h-6 bg-primary/10 rounded w-3/4 mb-4"></div>
       <div className="space-y-2 flex-grow">
-        <div className="h-4 bg-gray-200 rounded w-full"></div>
-        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+        <div className="h-4 bg-primary/5 rounded w-full"></div>
+        <div className="h-4 bg-primary/5 rounded w-5/6"></div>
       </div>
     </div>
   </div>
@@ -99,18 +99,18 @@ const BlogListPage: React.FC = () => {
   return (
     // The Header is now handled by the main Layout component.
     // The pt-20 class pushes content down to account for a fixed header.
-    <div className="pt-20 bg-gray-50 min-h-screen">
+    <div className="pt-20 bg-white min-h-screen">
         <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">Our Blog</h1>
-            <p className="mt-4 text-xl text-gray-600">
+            <h1 className="text-4xl font-extrabold text-primary sm:text-5xl">Our Blog</h1>
+            <p className="mt-4 text-xl text-primary/80">
               Insights on wealth management, market trends, and investment strategies.
             </p>
           </div>
           {/* Search Bar Section */}
           <div className="mb-8 max-w-2xl mx-auto">
             <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
               <input
@@ -118,7 +118,7 @@ const BlogListPage: React.FC = () => {
                 placeholder="Search posts by title or keyword..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                className="w-full pl-12 pr-4 py-3 border border-primary/20 rounded-full focus:ring-accent focus:border-accent transition-colors"
               />
             </div>
           </div>
@@ -127,10 +127,10 @@ const BlogListPage: React.FC = () => {
           <div className="mb-12 flex flex-wrap justify-center items-center gap-2">
             <button
               onClick={() => handleTagClick(null)}
-              className={`px-4 py-2 text-sm font-medium rounded-full transition-colors shadow-sm ${
+              className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
                 !activeTag
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-200'
+                  ? 'bg-accent text-primary shadow-md'
+                  : 'bg-white text-primary/80 hover:bg-primary/5 border border-primary/10'
               }`}
             >
               All Posts
@@ -139,10 +139,10 @@ const BlogListPage: React.FC = () => {
               <button
                 key={tag}
                 onClick={() => handleTagClick(tag)}
-                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors shadow-sm ${
+                className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
                   activeTag === tag
-                    ? 'bg-blue-600 text-white'
-                    : 'bg-white text-gray-700 hover:bg-gray-200'
+                    ? 'bg-accent text-primary shadow-md'
+                    : 'bg-white text-primary/80 hover:bg-primary/5 border border-primary/10'
                 }`}
               >
                 {tag}
@@ -159,7 +159,7 @@ const BlogListPage: React.FC = () => {
             ) : paginatedPosts.length > 0 ? (
               paginatedPosts.map((post) => (
                 <Link to={`/blogs/${post.slug}`} key={post.slug} className="block group">
-                  <div className="bg-white rounded-lg shadow-md overflow-hidden h-full flex flex-col transition-all duration-300 transform group-hover:-translate-y-1 group-hover:shadow-xl">
+                  <div className="bg-white rounded-xl shadow-md overflow-hidden h-full flex flex-col transition-all duration-300 transform group-hover:-translate-y-1 group-hover:shadow-xl border border-primary/10">
                     {post.imageUrl && (
                       <img
                         className="w-full h-48 object-cover"
@@ -171,15 +171,15 @@ const BlogListPage: React.FC = () => {
                     <div className="p-6 flex-grow flex flex-col justify-between">
                       <div>
                         {post.tags && post.tags.length > 0 && (
-                          <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-1 rounded-full mb-3">
+                          <span className="inline-block bg-accent/20 text-accent-dark text-xs font-semibold px-2.5 py-1 rounded-full mb-3">
                             {post.tags[0]}
                           </span>
                         )}
-                        <h2 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                        <h2 className="text-xl font-bold text-primary mb-2 group-hover:text-accent transition-colors">
                           {post.title}
                         </h2>
                       </div>
-                      <div className="flex items-center text-xs text-gray-500 mt-4">
+                      <div className="flex items-center text-xs text-primary/60 mt-4">
                         <div className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
                           <span>{new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</span>
@@ -191,30 +191,30 @@ const BlogListPage: React.FC = () => {
               ))
             ) : (
               <div className="md:col-span-2 lg:col-span-3 text-center py-12">
-                <h3 className="text-2xl font-semibold text-gray-700">No posts found</h3>
-                <p className="text-gray-500 mt-2">Try adjusting your search or filters.</p>
+                <h3 className="text-2xl font-semibold text-primary">No posts found</h3>
+                <p className="text-primary/70 mt-2">Try adjusting your search or filters.</p>
               </div>
             )}
           </div>
 
           {/* Pagination Controls */}
           {totalPages > 1 && (
-            <div className="mt-12 flex justify-center items-center gap-4">
+            <div className="mt-12 flex justify-center items-center gap-4 text-primary">
               <button
                 onClick={handlePrevPage}
                 disabled={currentPage === 1}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-primary/20 rounded-md shadow-sm text-sm font-medium text-primary/80 hover:bg-primary/5 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeft className="h-5 w-5" />
                 Previous
               </button>
-              <span className="text-sm text-gray-700">
+              <span className="text-sm text-primary/80">
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={handleNextPage}
                 disabled={currentPage === totalPages}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-4 py-2 bg-white border border-primary/20 rounded-md shadow-sm text-sm font-medium text-primary/80 hover:bg-primary/5 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Next
                 <ChevronRight className="h-5 w-5" />

@@ -106,13 +106,13 @@ const SIPCalculator: React.FC = () => {
           <p className="font-bold text-base mb-2">{`End of Year ${label}`}</p>
           <div className="flex justify-between gap-4">
             <span className="text-gray-600">Total Investment:</span>
-            <span className="font-semibold" style={{color: '#FFBB28'}}>{formatIndianCurrency(data.totalInvestment)}</span>
+            <span className="font-semibold" style={{color: '#F9A825'}}>{formatIndianCurrency(data.totalInvestment)}</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Wealth Gained:</span>
-            <span className="font-semibold" style={{color: '#0088FE'}}>{formatIndianCurrency(data.estimatedReturns)}</span>
+            <span className="font-semibold" style={{color: '#0D47A1'}}>{formatIndianCurrency(data.estimatedReturns)}</span>
           </div>
-          <div className="flex justify-between border-t pt-1 mt-1"><span className="text-gray-600 font-bold">Total Value:</span><span className="font-bold text-blue-700">{formatIndianCurrency(data.futureValue)}</span></div>
+          <div className="flex justify-between border-t pt-1 mt-1"><span className="text-gray-600 font-bold">Total Value:</span><span className="font-bold text-primary">{formatIndianCurrency(data.futureValue)}</span></div>
         </div>
       );
     }
@@ -144,6 +144,13 @@ Year | Total Investment | Wealth Gained | Future Value
     });
     copy(textToCopy.trim());
   };
+
+  // Define theme colors for the chart
+  const THEME_COLORS = {
+    investment: '#F9A825', // Accent - Golden/Yellow
+    returns: '#0D47A1',    // Primary - Dark Blue
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Input Controls */}
@@ -153,8 +160,8 @@ Year | Total Investment | Wealth Gained | Future Value
               onClick={() => setCalculationMode('regular')}
               className={`px-6 py-3 font-semibold text-sm rounded-t-lg transition-colors ${
                 calculationMode === 'regular'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-800'
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-gray-500 hover:text-primary/80'
               }`}
             >
               Regular SIP
@@ -163,8 +170,8 @@ Year | Total Investment | Wealth Gained | Future Value
               onClick={() => setCalculationMode('stepUp')}
               className={`px-6 py-3 font-semibold text-sm rounded-t-lg transition-colors ${
                 calculationMode === 'stepUp'
-                  ? 'border-b-2 border-blue-600 text-blue-600'
-                  : 'text-gray-500 hover:text-gray-800'
+                  ? 'border-b-2 border-primary text-primary'
+                  : 'text-gray-500 hover:text-primary/80'
               }`}
             >
               Step-up SIP
@@ -174,7 +181,9 @@ Year | Total Investment | Wealth Gained | Future Value
             label="Monthly Investment"
             value={monthlyInvestment}
             onChange={setMonthlyInvestment}
-            min={500} max={100000} step={500}
+            min={500}
+            max={100000}
+            step={500}
             prefix="₹"
           />
           {calculationMode === 'stepUp' && (
@@ -182,7 +191,9 @@ Year | Total Investment | Wealth Gained | Future Value
               label="Annual Step-up"
               value={annualIncrease}
               onChange={setAnnualIncrease}
-              min={0} max={25} step={1}
+              min={0}
+              max={25}
+              step={1}
               suffix="%"
             />
           )}
@@ -190,14 +201,18 @@ Year | Total Investment | Wealth Gained | Future Value
             label="Expected Annual Return"
             value={expectedReturn}
             onChange={setExpectedReturn}
-            min={1} max={20} step={0.5}
+            min={1}
+            max={20}
+            step={0.5}
             suffix="% p.a."
           />
           <CalculatorInput
             label="Investment Period"
             value={investmentPeriod}
             onChange={setInvestmentPeriod}
-            min={1} max={40} step={1}
+            min={1}
+            max={40}
+            step={1}
             suffix="Years"
           />
           <CallToActionButtons introText="Ready to start investing?" containerClassName="mt-4 pt-4" />
@@ -215,7 +230,7 @@ Year | Total Investment | Wealth Gained | Future Value
             <div className="w-full text-center">
               <p className="text-lg text-gray-600">Estimated Future Value</p>
               <div className="flex items-center justify-center gap-2">
-                <p className="text-4xl sm:text-5xl font-extrabold text-blue-700 my-2">{formatIndianCurrency(result.futureValue)}</p>
+                <p className="text-4xl sm:text-5xl font-extrabold text-primary my-2">{formatIndianCurrency(result.futureValue)}</p>
                 <button
                   onClick={handleCopy}
                   className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"
@@ -237,15 +252,15 @@ Year | Total Investment | Wealth Gained | Future Value
                     <YAxis tickFormatter={formatAxisY} tick={{ fontSize: 10 }} />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
-                    <Area type="monotone" dataKey="totalInvestment" stackId="1" stroke="#FFBB28" fill="#FFBB28" name="Total Investment" />
-                    <Area type="monotone" dataKey="estimatedReturns" stackId="1" stroke="#0088FE" fill="#0088FE" name="Wealth Gained" />
+                    <Area type="monotone" dataKey="totalInvestment" stackId="1" stroke={THEME_COLORS.investment} fill={THEME_COLORS.investment} name="Total Investment" />
+                    <Area type="monotone" dataKey="estimatedReturns" stackId="1" stroke={THEME_COLORS.returns} fill={THEME_COLORS.returns} name="Wealth Gained" />
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
               <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Total Investment</p><p className="font-bold text-lg text-gray-800">{formatIndianCurrency(result.totalInvestment)}</p></div>
+                <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Total Investment</p><p className="font-bold text-lg text-accent">{formatIndianCurrency(result.totalInvestment)}</p></div>
                 <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Wealth Gained</p><p className="font-bold text-lg text-green-600">{formatIndianCurrency(result.estimatedReturns)}</p></div>
-                <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Future Value</p><p className="font-bold text-lg text-blue-700">{formatIndianCurrency(result.futureValue)}</p></div>
+                <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Future Value</p><p className="font-bold text-lg text-primary">{formatIndianCurrency(result.futureValue)}</p></div>
               </div>
             </div>
           )}

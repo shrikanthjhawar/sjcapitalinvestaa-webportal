@@ -31,33 +31,33 @@ const featuredCalculators = [
 
 const FeaturedCalculators: React.FC = () => {
   return (
-    <section id="featured-calculators" className="py-20 bg-gray-50">
+    <section id="featured-calculators" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-bold text-primary mb-4">
             Financial Planning Tools
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="text-xl text-primary/80 max-w-3xl mx-auto">
             Use our calculators to plan your investments and secure your financial future.
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {featuredCalculators.map((calc) => (
-            <Link key={calc.title} to={calc.link} className="group block bg-white p-8 rounded-xl shadow-lg border border-gray-200 hover:border-blue-500 transition-all duration-300 transform hover:-translate-y-2">
-              <div className="bg-blue-100 text-blue-600 p-4 rounded-full w-fit mb-6">
+            <Link key={calc.title} to={calc.link} className="group block bg-white p-8 rounded-xl shadow-lg border border-primary/10 hover:border-accent transition-all duration-300 transform hover:-translate-y-2">
+              <div className="bg-accent text-primary p-4 rounded-full w-fit mb-6">
                 <calc.Icon className="h-8 w-8" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">{calc.title}</h3>
-              <p className="text-gray-600 mb-6 leading-relaxed flex-grow">{calc.description}</p>
-              <p className="font-semibold text-blue-600 flex items-center">
+              <h3 className="text-xl font-bold text-primary mb-3">{calc.title}</h3>
+              <p className="text-primary/90 mb-6 leading-relaxed flex-grow">{calc.description}</p>
+              <p className="font-semibold text-accent flex items-center">
                 Calculate Now <ArrowRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
               </p>
             </Link>
           ))}
         </div>
         <div className="text-center mt-12">
-            <Link to="/calculators" className="text-blue-600 font-semibold hover:underline">
+            <Link to="/calculators" className="text-accent font-semibold hover:underline">
                 View All Calculators &rarr;
             </Link>
         </div>

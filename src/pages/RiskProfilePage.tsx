@@ -43,41 +43,32 @@ const RiskProfilePage: React.FC = () => {
         <script type="application/ld+json">{JSON.stringify(quizSchema)}</script>
       </Helmet>
       <main className="pt-20 bg-gray-50">
-        {/* Introduction Section */}
-        <div className="bg-white">
-          <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl">
-              Understand Your Investment Risk Profile
-            </h1>
-            <p className="mt-5 max-w-3xl mx-auto text-xl text-gray-500">
-              A crucial first step towards smart investing. This short quiz helps align your portfolio with your financial personality.
-            </p>
-          </div>
-        </div>
+        <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            {/* Left Column: Risk Profile Form */}
+            <div className="lg:col-span-2">
+              <RiskProfileForm />
+            </div>
 
-        <RiskProfileForm />
-
-        {/* FAQ Section */}
-        <div className="bg-white">
-          <div className="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
-            <div className="max-w-3xl mx-auto">
-              <h2 className="text-center text-3xl font-bold text-gray-900 mb-12">
-                Frequently Asked Questions
-              </h2>
-              <div className="space-y-10">
-                {faqs.map((faq, index) => (
-                  <div key={index} className="flex gap-4">
-                    <div className="flex-shrink-0">
-                      <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-600 text-white">
-                        <HelpCircle className="h-6 w-6" />
+            {/* Right Column: FAQ Section */}
+            <div className="lg:col-span-1">
+              <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-200 sticky top-24">
+                <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Frequently Asked Questions</h2>
+                <div className="space-y-8">
+                  {faqs.map((faq, index) => (
+                    <div key={index} className="flex gap-4">
+                      <div className="flex-shrink-0">
+                        <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-blue-600 text-white">
+                          <HelpCircle className="h-6 w-6" />
+                        </div>
+                      </div>
+                      <div>
+                        <dt className="text-base font-semibold text-gray-900">{faq.question}</dt>
+                        <dd className="mt-1 text-sm text-gray-600">{faq.answer}</dd>
                       </div>
                     </div>
-                    <div>
-                      <dt className="text-lg font-semibold text-gray-900">{faq.question}</dt>
-                      <dd className="mt-2 text-base text-gray-600">{faq.answer}</dd>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </div>
