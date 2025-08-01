@@ -5,6 +5,7 @@ date: "2025-07-23"
 author: "SJ Capital Investaa"
 tags: ["Inflation", "Investing", "Wealth Management"]
 excerpt: "Understand how inflation silently erodes your purchasing power and what you can do to protect your wealth."
+imageUrl: "/images/inflation.jpg"
 ---
 
 # Inflation: The Silent Killer of Your Income

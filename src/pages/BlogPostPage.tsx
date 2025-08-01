@@ -240,7 +240,7 @@ const BlogPostPage: React.FC = () => {
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="lg:grid lg:grid-cols-12 lg:gap-12">
             <article className="lg:col-span-9 bg-white p-8 lg:p-12 rounded-xl shadow-xl border border-primary/10">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-primary mb-4 font-sans">{post.title}</h1>
+              
               <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-primary/60 mb-4">
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4" />
@@ -285,21 +285,23 @@ const BlogPostPage: React.FC = () => {
               <div
                 className="
                   prose prose-lg max-w-none
-                  prose-p:font-serif prose-p:leading-relaxed prose-p:text-primary/90 prose-p:mb-6
-                  prose-headings:font-sans prose-headings:font-bold prose-headings:text-primary prose-headings:scroll-mt-24
-                  prose-h2:text-3xl prose-h2:mt-16 prose-h2:mb-6
-                  prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-4
-                  prose-li:font-serif prose-li:my-3
-                  prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-a:font-semibold
-                  prose-blockquote:border-l-4 prose-blockquote:border-accent/50 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-primary/70
-                  prose-hr:my-8 prose-hr:border-primary/10
-                  prose-code:bg-primary/5 prose-code:rounded-md prose-code:px-1.5 prose-code:py-1 prose-code:font-mono
+                  prose-p:font-sans prose-p:leading-relaxed prose-p:text-gray-800 prose-p:mb-4
+                  prose-headings:font-sans prose-headings:font-bold prose-headings:text-blue-900 prose-headings:scroll-mt-24
+                  prose-h1:text-3xl prose-h1:mt-8 prose-h1:mb-4
+                  prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-3
+                  prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-2
+                  prose-li:font-sans prose-li:my-1 prose-li:text-gray-800
+                  prose-a:text-blue-700 prose-a:no-underline hover:prose-a:underline prose-a:font-semibold
+                  prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-4 prose-blockquote:italic prose-blockquote:text-blue-800
+                  prose-hr:my-4 prose-hr:border-gray-300
+                  prose-code:bg-gray-100 prose-code:rounded-md prose-code:px-1.5 prose-code:py-1 prose-code:font-mono
                 "
               >
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeRaw]}
                   components={{
+                    h1: ({ node, ...props }) => <h2 id={slugify(String(props.children))} {...props} />,
                     h2: ({ node, ...props }) => <h2 id={slugify(String(props.children))} {...props} />,
                     h3: ({ node, ...props }) => <h3 id={slugify(String(props.children))} {...props} />,
                     code(props) {

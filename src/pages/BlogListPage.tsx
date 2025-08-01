@@ -101,12 +101,7 @@ const BlogListPage: React.FC = () => {
     // The pt-20 class pushes content down to account for a fixed header.
     <div className="pt-20 bg-white min-h-screen">
         <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-extrabold text-primary sm:text-5xl">Our Blog</h1>
-            <p className="mt-4 text-xl text-primary/80">
-              Insights on wealth management, market trends, and investment strategies.
-            </p>
-          </div>
+          
           {/* Search Bar Section */}
           <div className="mb-8 max-w-2xl mx-auto">
             <div className="relative">
@@ -159,10 +154,11 @@ const BlogListPage: React.FC = () => {
             ) : paginatedPosts.length > 0 ? (
               paginatedPosts.map((post) => (
                 <Link to={`/blogs/${post.slug}`} key={post.slug} className="block group">
-                  <div className="bg-white rounded-xl shadow-md overflow-hidden h-full flex flex-col transition-all duration-300 transform group-hover:-translate-y-1 group-hover:shadow-xl border border-primary/10">
+                  <div className="bg-white rounded-xl shadow-md overflow-hidden min-h-[450px] flex flex-col transition-all duration-300 transform group-hover:-translate-y-1 group-hover:shadow-xl border border-primary/10">
+                
                     {post.imageUrl && (
                       <img
-                        className="w-full h-48 object-cover"
+                        className="w-full h-64 object-cover"
                         src={post.imageUrl}
                         alt={`Featured image for ${post.title}`}
                         loading="lazy"
