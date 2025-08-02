@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import fullLogo from '/images/SJ_Capital_Investaa_HQ.jpg'; // Using a transparent PNG for the logo. TODO: Update with your actual transparent logo file.
+import fullLogo from '/images/sj_logo.png'; // Using a transparent PNG for the logo. TODO: Update with your actual transparent logo file.
 
 const navLinks = [
   { name: 'Home', type: 'scroll', targetId: 'hero' },
@@ -73,7 +73,11 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center space-x-2">
-            <img src={fullLogo} alt="SJ Capital Investaa Logo" className="h-10 w-auto " />
+            <img src={fullLogo} alt="SJ Capital Investaa Logo" className={`h-12 w-auto object-contain transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} />
+            <div className="flex items-baseline text-2xl font-bold ml-2">
+              <span className={`${isScrolled ? 'text-primary' : 'text-accent'} mr-1`}>SJ CAPITAL</span>
+              <span className={`${isScrolled ? 'text-accent' : 'text-yellow-600'}`}> INVESTAA</span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
