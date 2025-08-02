@@ -53,21 +53,21 @@ export default function BookingAndContact() {
   };
 
   return (
-    <section className="py-12 bg-gray-50" id="booking-contact">
+    <section className="py-20 bg-white" id="booking-contact">
       <div className="container mx-auto px-4 max-w-5xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Booking Calendar Section */}
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-            <div className="text-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-primary/10">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-primary mb-2">
                 📅 Book a Free Consultation
               </h2>
-              <p className="text-gray-600 text-sm">
+              <p className="text-primary/80">
                 Schedule a personalized investment consultation with our certified financial advisors.
               </p>
             </div>
             
-            <div className="bg-gray-50 rounded-lg p-4 min-h-[350px] flex items-center justify-center">
+            <div className="bg-primary/5 rounded-lg p-2 min-h-[450px] flex items-center justify-center">
               <iframe
                 src="https://sjcapitalinvestaa.zohobookings.in/portal-embed#/300049000000042054"
                 width="100%"
@@ -80,19 +80,19 @@ export default function BookingAndContact() {
           </div>
 
           {/* Contact Form Section */}
-          <div className="bg-white rounded-lg shadow-md p-6 border border-gray-100">
-            <div className="text-center mb-4">
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="bg-white rounded-xl shadow-lg p-8 border border-primary/10">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl font-bold text-primary mb-2">
                 ✉️ Send Us a Message
               </h2>
-              <p className="text-gray-600 text-sm">
+              <p className="text-primary/80">
                 Have questions? Get in touch and we'll respond within 24 hours.
               </p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="name" className="block text-sm font-medium text-primary/90 mb-1">
                   Full Name *
                 </label>
                 <input
@@ -102,13 +102,13 @@ export default function BookingAndContact() {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-sm"
+                  className="w-full px-4 py-2 border border-primary/20 rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
                   placeholder="Enter your full name"
                 />
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email" className="block text-sm font-medium text-primary/90 mb-1">
                   Email Address *
                 </label>
                 <input
@@ -118,13 +118,13 @@ export default function BookingAndContact() {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-sm"
+                  className="w-full px-4 py-2 border border-primary/20 rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors"
                   placeholder="Enter your email address"
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="message" className="block text-sm font-medium text-primary/90 mb-1">
                   Message *
                 </label>
                 <textarea
@@ -134,7 +134,7 @@ export default function BookingAndContact() {
                   onChange={handleInputChange}
                   required
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-vertical text-sm"
+                  className="w-full px-4 py-2 border border-primary/20 rounded-md focus:ring-2 focus:ring-accent focus:border-accent transition-colors resize-vertical"
                   placeholder="Tell us about your investment goals..."
                 />
               </div>
@@ -159,7 +159,7 @@ export default function BookingAndContact() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-md font-medium hover:bg-blue-700 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-md hover:shadow-lg text-sm"
+                  className="bg-accent text-primary px-8 py-3 rounded-lg font-bold hover:bg-accent/90 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none shadow-lg"
                 >
                   {isSubmitting ? (
                     <span className="flex items-center justify-center">

@@ -8,9 +8,9 @@ import LumpsumCalculator from '../components/calculator/LumpsumCalculator';
 import GoalSipCalculator from '../components/calculator/GoalSipCalculator';
 import ChildEducationCalculator from '../components/calculator/ChildEducationCalculator';
 import RetirementCalculator from '../components/calculator/RetirementCalculator';
-import StepUpSipCalculator from '../components/calculator/StepUpSipCalculator';
 import SwpCalculator from '../components/calculator/SwpCalculator';
 import EmiCalculator from '../components/calculator/EmiCalculator';
+import FdRdCalculator from '../components/calculator/FdRdCalculator';
 import CalculatorDisclaimer from '../components/calculator/CalculatorDisclaimer';
 import NotFoundPage from './NotFoundPage';
 
@@ -26,11 +26,6 @@ const calculatorMap = {
     component: LumpsumCalculator,
     description: 'Calculate the future value of a one-time lumpsum investment.'
   },
-  'step-up-sip': {
-    name: 'Step-up SIP Calculator',
-    component: StepUpSipCalculator,
-    description: 'Calculate returns for SIPs with periodic (annual) top-ups.'
-  },
   'goal-sip': {
     name: 'Goal SIP Calculator',
     component: GoalSipCalculator,
@@ -45,6 +40,11 @@ const calculatorMap = {
     name: 'EMI Calculator',
     component: EmiCalculator,
     description: 'Calculate your Equated Monthly Installment (EMI) for loans.'
+  },
+  'fd-rd': {
+    name: 'FD/RD Calculator',
+    component: FdRdCalculator,
+    description: 'Calculate the maturity value and interest earned on your Fixed and Recurring Deposits.'
   },
   'retirement': {
     name: 'Retirement Calculator',
@@ -76,17 +76,17 @@ const CalculatorDetailPage: React.FC = () => {
         <meta name="description" content={calculator.description} />
         <link rel="canonical" href={`https://www.sjcapital.in/calculators/${calculatorId}`} />
       </Helmet>
-      <main className="pt-20 bg-gray-50 min-h-screen">
+      <main className="pt-20 bg-white min-h-screen">
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-5xl mx-auto">
             <div className="mb-8">
-              <Link to="/calculators" className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium transition-colors">
+              <Link to="/calculators" className="inline-flex items-center text-accent hover:text-accent/80 font-medium transition-colors">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to All Calculators
               </Link>
             </div>
-            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-200">
-              <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl text-center mb-8">{calculator.name}</h1>
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-primary/10">
+              <h1 className="text-3xl font-extrabold text-primary sm:text-4xl text-center mb-8">{calculator.name}</h1>
               <ActiveCalculatorComponent />
             </div>
             <CalculatorDisclaimer />

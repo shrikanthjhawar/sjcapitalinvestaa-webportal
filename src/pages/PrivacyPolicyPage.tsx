@@ -13,20 +13,28 @@ const PrivacyPolicyPage: React.FC = () => {
         <meta property="og:url" content="https://www.sjcapital.in/privacy-policy" />
         <meta property="og:type" content="website" />
       </Helmet>
-      <main className="pt-20 bg-gray-50">
+      <main className="pt-20 bg-white">
         <div className="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
-          <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-lg border border-gray-200">
-            <h1 className="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-6 text-center">
+          <div className="bg-white p-8 sm:p-12 rounded-2xl shadow-xl border border-primary/10">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-primary mb-6 text-center">
               Privacy Policy
             </h1>
-            <p className="text-center text-gray-500 mb-10">Last updated: October 26, 2023</p>
+            <p className="text-center text-primary/60 mb-10">Last updated: October 26, 2023</p>
 
-            <div className="prose prose-lg max-w-none text-gray-700">
+            <div className="
+              prose prose-lg max-w-none
+              prose-p:font-serif prose-p:leading-relaxed prose-p:text-primary/90
+              prose-headings:font-sans prose-headings:font-bold prose-headings:text-primary
+              prose-h2:text-2xl prose-h2:mt-8 prose-h2:mb-4
+              prose-h3:text-xl prose-h3:mt-6 prose-h3:mb-2
+              prose-ul:font-serif prose-li:my-2
+              prose-a:text-accent hover:prose-a:underline prose-a:font-semibold
+            ">
               <p>
                 SJ Capital Investaa ("us", "we", or "our") operates the https://www.sjcapital.in website (the "Service"). This page informs you of our policies regarding the collection, use, and disclosure of personal data when you use our Service and the choices you have associated with that data.
               </p>
 
-              <h2 className="text-2xl font-bold mt-8 mb-4">Information Collection and Use</h2>
+              <h2>Information Collection and Use</h2>
               <p>
                 We collect several different types of information for various purposes to provide and improve our Service to you.
               </p>
@@ -48,7 +56,7 @@ const PrivacyPolicyPage: React.FC = () => {
                 We may also collect information on how the Service is accessed and used ("Usage Data"). This Usage Data may include information such as your computer's Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that you visit, the time and date of your visit, the time spent on those pages, unique device identifiers and other diagnostic data.
               </p>
 
-              <h2 className="text-2xl font-bold mt-8 mb-4">Use of Data</h2>
+              <h2>Use of Data</h2>
               <p>SJ Capital Investaa uses the collected data for various purposes:</p>
               <ul>
                 <li>To provide and maintain our Service</li>
@@ -60,22 +68,22 @@ const PrivacyPolicyPage: React.FC = () => {
                 <li>To detect, prevent and address technical issues</li>
               </ul>
 
-              <h2 className="text-2xl font-bold mt-8 mb-4">Data Security</h2>
+              <h2>Data Security</h2>
               <p>
                 The security of your data is important to us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While we strive to use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security.
               </p>
 
-              <h2 className="text-2xl font-bold mt-8 mb-4">Links to Other Sites</h2>
+              <h2>Links to Other Sites</h2>
               <p>
                 Our Service may contain links to other sites that are not operated by us. If you click on a third party link, you will be directed to that third party's site. We strongly advise you to review the Privacy Policy of every site you visit. We have no control over and assume no responsibility for the content, privacy policies or practices of any third party sites or services.
               </p>
 
-              <h2 className="text-2xl font-bold mt-8 mb-4">Changes to This Privacy Policy</h2>
+              <h2>Changes to This Privacy Policy</h2>
               <p>
                 We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page. We will let you know via email and/or a prominent notice on our Service, prior to the change becoming effective and update the "last updated" date at the top of this Privacy Policy.
               </p>
 
-              <h2 className="text-2xl font-bold mt-8 mb-4">Contact Us</h2>
+              <h2>Contact Us</h2>
               <p>
                 If you have any questions about this Privacy Policy, please contact us:
               </p>

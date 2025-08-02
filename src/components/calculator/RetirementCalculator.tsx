@@ -3,6 +3,7 @@ import { Calculator, AlertCircle } from 'lucide-react';
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import CallToActionButtons from '../CallToActionButtons';
 import usePersistentState from '../../hooks/usePersistentState';
+import CalculatorInput from './CalculatorInput';
 import { formatIndianCurrency } from '../../utils/formatCurrency';
 
 const RetirementCalculator: React.FC = () => {
@@ -51,39 +52,43 @@ const RetirementCalculator: React.FC = () => {
   return (
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Input Controls Column */}
-        <div className="space-y-6">
-          {/* Current Age */}
-          <div>
-            <label htmlFor="currentAge" className="flex justify-between text-sm font-medium text-gray-700 mb-1">
-              <span>Current Age</span>
-              <span className="font-bold text-blue-600">{currentAge} Years</span>
-            </label>
-            <input type="range" id="currentAge" min="18" max="60" value={currentAge} onChange={(e) => setCurrentAge(parseInt(e.target.value))} className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600" />
-          </div>
-          {/* Retirement Age */}
-          <div>
-            <label htmlFor="retirementAge" className="flex justify-between text-sm font-medium text-gray-700 mb-1">
-              <span>Retirement Age</span>
-              <span className="font-bold text-blue-600">{retirementAge} Years</span>
-            </label>
-            <input type="range" id="retirementAge" min="40" max="80" value={retirementAge} onChange={(e) => setRetirementAge(parseInt(e.target.value))} className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600" />
-          </div>
-          {/* Monthly Investment */}
-          <div>
-            <label htmlFor="monthlyInvestment" className="flex justify-between text-sm font-medium text-gray-700 mb-1">
-              <span>Monthly Investment</span>
-              <span className="font-bold text-blue-600">{formatIndianCurrency(monthlyInvestment)}</span>
-            </label>
-            <input type="range" id="monthlyInvestment" min="500" max="100000" step="500" value={monthlyInvestment} onChange={(e) => setMonthlyInvestment(parseInt(e.target.value))} className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600" />
-          </div>
-          {/* Expected Return */}
-          <div>
-            <label htmlFor="expectedReturn" className="flex justify-between text-sm font-medium text-gray-700 mb-1">
-              <span>Expected Annual Return</span>
-              <span className="font-bold text-blue-600">{expectedReturn}% p.a.</span>
-            </label>
-            <input type="range" id="expectedReturn" min="5" max="20" value={expectedReturn} onChange={(e) => setExpectedReturn(parseInt(e.target.value))} className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600" />
-          </div>
+        <div className="space-y-2">
+          <CalculatorInput
+            label="Current Age"
+            value={currentAge}
+            onChange={setCurrentAge}
+            min={18}
+            max={retirementAge - 1}
+            step={1}
+            suffix="Years"
+          />
+          <CalculatorInput
+            label="Retirement Age"
+            value={retirementAge}
+            onChange={setRetirementAge}
+            min={currentAge + 1}
+            max={80}
+            step={1}
+            suffix="Years"
+          />
+          <CalculatorInput
+            label="Monthly Investment"
+            value={monthlyInvestment}
+            onChange={setMonthlyInvestment}
+            min={500}
+            max={100000}
+            step={500}
+            prefix="₹"
+          />
+          <CalculatorInput
+            label="Expected Annual Return"
+            value={expectedReturn}
+            onChange={setExpectedReturn}
+            min={5}
+            max={20}
+            step={0.5}
+            suffix="% p.a."
+          />
           {/* Call to Action Buttons */}
           <CallToActionButtons introText="Ready to start your journey?" containerClassName="mt-8 pt-6 border-t border-gray-200" />
         </div>

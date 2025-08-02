@@ -2,7 +2,12 @@
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: '#0A1F44',
+        accent: '#C39A32',
+      },
+    },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };

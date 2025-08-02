@@ -8,6 +8,7 @@ export interface Post {
   excerpt: string;
   content: string;
   tags: string[];
+  imageUrl?: string; // Add imageUrl as an optional property
 }
 
 // This function uses Vite's eager import.meta.glob to get all markdown files
@@ -41,6 +42,7 @@ function loadPosts(): Post[] {
         excerpt: attributes.excerpt,
         content: body,
         tags: attributes.tags || [],
+        imageUrl: attributes.imageUrl || undefined, // Add imageUrl here
       });
     }
     // Sort posts by date in descending order (newest first)
