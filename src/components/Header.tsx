@@ -14,13 +14,7 @@ const navLinks = [
 ];
 
 const externalLinks = [
-    { name: 'Client Login', href: '' }, // Add your client login URL here
 ];
-
-const ctaLinks = [
-    { name: 'Sign Up', href: '' }, // Add your sign up URL here
-];
-
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -98,15 +92,12 @@ const Header: React.FC = () => {
                 {link.name}
               </a>
             ))}
-            {ctaLinks.map(link => (
-              <a key={link.name} href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-accent text-primary px-5 py-2 rounded-lg font-semibold hover:bg-accent/90 transition-all duration-300 transform hover:scale-105 shadow-lg"
-            >
-                {link.name}
-              </a>
-            ))}
+            <Link to="/login" className="bg-accent text-primary px-5 py-2 rounded-lg font-semibold hover:bg-accent/90 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              Login
+            </Link>
+            <Link to="/register" className="bg-accent text-primary px-5 py-2 rounded-lg font-semibold hover:bg-accent/90 transition-all duration-300 transform hover:scale-105 shadow-lg">
+              Sign Up
+            </Link>
           </nav>
 
           {/* Mobile menu button */}
@@ -139,15 +130,12 @@ const Header: React.FC = () => {
                   {link.name}
                 </a>
               ))}
-              {ctaLinks.map(link => (
-                <a key={link.name} href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-2 text-center bg-accent text-primary px-6 py-3 rounded-lg font-semibold hover:bg-accent/90 transition-all duration-200"
-              >
-                  {link.name}
-                </a>
-              ))}
+              <Link to="/login" onClick={() => setIsMenuOpen(false)} className="mt-2 text-center bg-accent text-primary px-6 py-3 rounded-lg font-semibold hover:bg-accent/90 transition-all duration-200">
+                Login
+              </Link>
+              <Link to="/register" onClick={() => setIsMenuOpen(false)} className="mt-2 text-center bg-accent text-primary px-6 py-3 rounded-lg font-semibold hover:bg-accent/90 transition-all duration-200">
+                Sign Up
+              </Link>
             </nav>
           </div>
         )}
