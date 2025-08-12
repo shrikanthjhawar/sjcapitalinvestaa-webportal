@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import fullLogo from '/images/sj_logo.png'; // Using a transparent PNG for the logo. TODO: Update with your actual transparent logo file.
+import fullLogo from '/images/sj_logo.png';
 
 const navLinks = [
   { name: 'Home', type: 'scroll', targetId: 'hero' },
@@ -21,14 +21,11 @@ const ctaLinks = [
     { name: 'Sign Up', href: '' }, // Add your sign up URL here
 ];
 
-
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Refactored for better readability and to avoid code duplication.
   const scrollToSection = (sectionId: string) => {
     const performScroll = () => {
       const element = document.getElementById(sectionId);
@@ -44,39 +41,15 @@ const Header: React.FC = () => {
     setIsMenuOpen(false);
   };
 
-  useEffect(() => {
-    const handleScroll = () => {
-      // Set scrolled state if user scrolls down more than 10px
-      setIsScrolled(window.scrollY > 10);
-    };
-
-    // Only add scroll listener on the homepage
-    if (location.pathname === '/') {
-      window.addEventListener('scroll', handleScroll);
-      // Initial check
-      handleScroll();
-    } else {
-      // On other pages, header is always solid
-      setIsScrolled(true);
-    }
-
-    // Cleanup listener
-    return () => {
-      if (location.pathname === '/') {
-        window.removeEventListener('scroll', handleScroll);
-      }
-    };
-  }, [location.pathname]);
-
   return (
-    <header className={`fixed w-full top-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
+    <header className="fixed w-full top-0 z-50 transition-all duration-300 bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          <Link to="/" className="flex items-center space-x-2">
-            <img src={fullLogo} alt="SJ Capital Investaa Logo" className={`h-12 w-auto object-contain transition-opacity duration-300 ${isScrolled ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} />
+          <Link to="/" className="flex items-center space-x-4">
+            <img src={fullLogo} alt="SJ Capital Investaa Logo" className="h-12 w-auto object-contain" />
             <div className="flex items-baseline text-2xl font-bold ml-2">
-              <span className={`${isScrolled ? 'text-primary' : 'text-accent'} mr-1`}>SJ CAPITAL</span>
-              <span className={`${isScrolled ? 'text-accent' : 'text-yellow-600'}`}> INVESTAA</span>
+              <span className="text-primary mr-1">SJ CAPITAL</span>
+              <span className="text-accent"> INVESTAA</span>
             </div>
           </Link>
 
@@ -84,17 +57,17 @@ const Header: React.FC = () => {
           <nav className="hidden md:flex items-center space-x-8">
             {navLinks.map(link => (
               link.type === 'scroll' ? (
-                <button key={link.name} onClick={() => scrollToSection(link.targetId)} className={`font-medium hover:text-accent transition-colors duration-200 ${isScrolled ? 'text-primary/80' : 'text-white/80'}`}>
+                <button key={link.name} onClick={() => scrollToSection(link.targetId)} className="font-medium hover:text-accent transition-colors duration-200 text-primary/80">
                   {link.name}
                 </button>
               ) : (
-                <Link key={link.name} to={link.path!} className={`font-medium transition-colors duration-200 ${location.pathname.startsWith(link.path!) ? 'text-accent' : (isScrolled ? 'text-primary/80' : 'text-white/80')} hover:text-accent`}>
+                <Link key={link.name} to={link.path!} className={`font-medium transition-colors duration-200 ${location.pathname.startsWith(link.path!) ? 'text-accent' : 'text-primary/80'} hover:text-accent`}>
                   {link.name}
                 </Link>
               )
             ))}
             {externalLinks.map(link => (
-              <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" className={`font-medium hover:text-accent transition-colors duration-200 ${isScrolled ? 'text-primary/80' : 'text-white/80'}`}>
+              <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" className="font-medium hover:text-accent transition-colors duration-200 text-primary/80">
                 {link.name}
               </a>
             ))}
@@ -112,7 +85,7 @@ const Header: React.FC = () => {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`md:hidden hover:text-accent transition-colors duration-200 ${isScrolled ? 'text-primary/80' : 'text-white/80'}`}
+            className="md:hidden hover:text-accent transition-colors duration-200 text-primary/80"
           >
             {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -120,22 +93,22 @@ const Header: React.FC = () => {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className={`md:hidden rounded-lg mt-2 p-4 transition-colors duration-300 ${isScrolled ? 'bg-white' : 'bg-primary'}`}>
+          <div className="md:hidden rounded-lg mt-2 p-4 transition-colors duration-300 bg-white">
             <nav className="flex flex-col space-y-3">
               {navLinks.map(link => (
                 link.type === 'scroll' ? (
-                  <button key={link.name} onClick={() => scrollToSection(link.targetId)} className={`py-2 text-lg font-medium hover:text-accent transition-colors duration-200 text-left ${isScrolled ? 'text-primary/80' : 'text-white/80'}`}>
+                  <button key={link.name} onClick={() => scrollToSection(link.targetId)} className="py-2 text-lg font-medium hover:text-accent transition-colors duration-200 text-left text-primary/80">
                     {link.name}
                   </button>
                 ) : (
-                  <Link key={link.name} to={link.path!} onClick={() => setIsMenuOpen(false)} className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname.startsWith(link.path!) ? 'text-accent' : (isScrolled ? 'text-primary/80' : 'text-white/80')} hover:text-accent`}>
+                  <Link key={link.name} to={link.path!} onClick={() => setIsMenuOpen(false)} className={`py-2 text-lg font-medium transition-colors duration-200 text-left ${location.pathname.startsWith(link.path!) ? 'text-accent' : 'text-primary/80'} hover:text-accent`}>
                     {link.name}
                   </Link>
                 )
               ))}
-              <div className={`border-t my-2 transition-colors duration-300 ${isScrolled ? 'border-primary/20' : 'border-white/20'}`}></div>
+              <div className="border-t my-2 transition-colors duration-300 border-primary/20"></div>
               {externalLinks.map(link => (
-                <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" className={`py-2 text-lg font-medium hover:text-accent transition-colors duration-200 text-left ${isScrolled ? 'text-primary/80' : 'text-white/80'}`}>
+                <a key={link.name} href={link.href} target="_blank" rel="noopener noreferrer" className="py-2 text-lg font-medium hover:text-accent transition-colors duration-200 text-left text-primary/80">
                   {link.name}
                 </a>
               ))}
@@ -157,3 +130,4 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+
