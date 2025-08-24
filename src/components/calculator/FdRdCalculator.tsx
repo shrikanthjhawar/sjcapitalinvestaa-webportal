@@ -83,12 +83,12 @@ const FdRdCalculator: React.FC = () => {
   const COLORS = ['#0088FE', '#00C49F'];
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Input Controls */}
-      <div className="space-y-6">
-        <div className="flex justify-center mb-4 border-b border-gray-200">
-          <button onClick={() => setMode('fd')} className={`px-6 py-3 font-semibold text-sm rounded-t-lg transition-colors ${mode === 'fd' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'}`}>Fixed Deposit (FD)</button>
-          <button onClick={() => setMode('rd')} className={`px-6 py-3 font-semibold text-sm rounded-t-lg transition-colors ${mode === 'rd' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'}`}>Recurring Deposit (RD)</button>
+      <div className="space-y-4">
+        <div className="flex justify-center mb-3 border-b border-gray-200">
+          <button onClick={() => setMode('fd')} className={`px-4 py-2 font-semibold text-sm rounded-t-lg transition-colors ${mode === 'fd' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'}`}>Fixed Deposit (FD)</button>
+          <button onClick={() => setMode('rd')} className={`px-4 py-2 font-semibold text-sm rounded-t-lg transition-colors ${mode === 'rd' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'}`}>Recurring Deposit (RD)</button>
         </div>
 
         {mode === 'fd' ? (
@@ -111,23 +111,23 @@ const FdRdCalculator: React.FC = () => {
           </div>
         )}
         
-        <CallToActionButtons introText="Looking for secure investment options?" containerClassName="mt-8 pt-6 border-t border-gray-200" />
+        <CallToActionButtons introText="Looking for secure investment options?" containerClassName="mt-4 pt-4 border-t border-gray-200" />
       </div>
 
       {/* Results & Chart */}
-      <div className="bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-center min-h-[500px]">
+      <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 flex flex-col items-center justify-center text-center min-h-[400px]">
         {result ? (
           <div className="w-full">
-            <p className="text-lg text-gray-600">Maturity Value</p>
-            <p className="text-4xl sm:text-5xl font-extrabold text-blue-700 my-2">{formatIndianCurrency(result.maturityValue)}</p>
-            <div className="w-full h-64 my-6"><ResponsiveContainer><PieChart><Pie data={chartData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} fill="#8884d8" paddingAngle={5} dataKey="value" nameKey="name">{chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip formatter={(value: number) => formatIndianCurrency(value)} /><Legend iconType="circle" /></PieChart></ResponsiveContainer></div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-              <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Invested Amount</p><p className="font-bold text-lg text-gray-800">{formatIndianCurrency(result.investedAmount)}</p></div>
-              <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Interest Earned</p><p className="font-bold text-lg text-green-600">{formatIndianCurrency(result.interestEarned)}</p></div>
-              <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Maturity Value</p><p className="font-bold text-lg text-blue-700">{formatIndianCurrency(result.maturityValue)}</p></div>
+            <p className="text-base text-gray-600">Maturity Value</p>
+            <p className="text-3xl sm:text-4xl font-extrabold text-blue-700 my-1">{formatIndianCurrency(result.maturityValue)}</p>
+            <div className="w-full h-48 my-4"><ResponsiveContainer><PieChart><Pie data={chartData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} fill="#8884d8" paddingAngle={5} dataKey="value" nameKey="name">{chartData.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip formatter={(value: number) => formatIndianCurrency(value)} /><Legend iconType="circle" /></PieChart></ResponsiveContainer></div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-center">
+              <div className="bg-white p-2.5 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Invested Amount</p><p className="font-bold text-base text-gray-800">{formatIndianCurrency(result.investedAmount)}</p></div>
+              <div className="bg-white p-2.5 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Interest Earned</p><p className="font-bold text-base text-green-600">{formatIndianCurrency(result.interestEarned)}</p></div>
+              <div className="bg-white p-2.5 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Maturity Value</p><p className="font-bold text-base text-blue-700">{formatIndianCurrency(result.maturityValue)}</p></div>
             </div>
           </div>
-        ) : (<p>Enter valid details to see the calculation.</p>)}
+        ) : (<p className="text-sm">Enter valid details to see the calculation.</p>)}
       </div>
     </div>
   );

@@ -37,22 +37,22 @@ const CallToActionButtons: React.FC<CallToActionButtonsProps> = ({
       <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
         {showInvestButton && (
           <a
-            href="/invest" // This can link to an external investment platform
+            href="https://invest.sjcapital.in"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent text-primary font-bold py-3 px-6 rounded-lg hover:bg-accent/90 transition-colors transform hover:scale-105 shadow-md"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-accent-gradient text-primary font-bold py-4 px-8 rounded-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105 shadow-premium"
           >
             <TrendingUp className="w-5 h-5" />
-            Invest Now
+            Start Investing
           </a>
         )}
         {showAdvisorButton && (
           <button
             onClick={handleContactClick}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 border-2 border-accent text-accent font-bold py-3 px-6 rounded-lg hover:bg-accent hover:text-primary transition-colors"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-3 border-2 border-accent text-accent font-bold py-4 px-8 rounded-xl hover:bg-accent hover:text-primary transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
             <Phone className="w-5 h-5" />
-            Connect with an Advisor
+            Book Free Consultation
           </button>
         )}
       </div>

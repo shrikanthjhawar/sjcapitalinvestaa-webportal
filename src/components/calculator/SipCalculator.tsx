@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { AlertCircle, BarChart3, Copy, Check } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Copy, Check, TrendingUp, PiggyBank, Calendar, Target } from 'lucide-react';
+import { motion } from 'framer-motion';
 import usePersistentState from '../../hooks/usePersistentState';
 import CallToActionButtons from '../CallToActionButtons';
 import CalculatorInput from './CalculatorInput';
+import CalculatorDisclaimer from './CalculatorDisclaimer';
 import { formatIndianCurrency } from '../../utils/formatCurrency';
 import { useCopyToClipboard } from '../../hooks/useCopyToClipboard';
 
 const SIPCalculator: React.FC = () => {
   const [calculationMode, setCalculationMode] = usePersistentState<'regular' | 'stepUp'>('sip_mode', 'regular');
   const [monthlyInvestment, setMonthlyInvestment] = usePersistentState<number>('sip_monthlyInvestment', 10000);
-  const [annualIncrease, setAnnualIncrease] = usePersistentState<number>('sip_annualIncrease', 10); // For Step-up
+  const [annualIncrease, setAnnualIncrease] = usePersistentState<number>('sip_annualIncrease', 10);
   const [expectedReturn, setExpectedReturn] = usePersistentState<number>('sip_expectedReturn', 12);
   const [investmentPeriod, setInvestmentPeriod] = usePersistentState<number>('sip_investmentPeriod', 10);
 
@@ -35,12 +37,11 @@ const SIPCalculator: React.FC = () => {
 
     if (calculationMode === 'regular') {
       const P = monthlyInvestment;
-      const i = expectedReturn / 100 / 12; // monthly rate
+      const i = expectedReturn / 100 / 12;
       const N_years = investmentPeriod;
 
       for (let year = 1; year <= N_years; year++) {
         const n_months = year * 12;
-        // M = P × ({[1 + i]^n – 1} / i) × (1 + i)
         const futureValueForYear = P * ((Math.pow(1 + i, n_months) - 1) / i) * (1 + i);
         const totalInvestmentForYear = P * n_months;
         const estimatedReturnsForYear = futureValueForYear - totalInvestmentForYear;
@@ -51,7 +52,7 @@ const SIPCalculator: React.FC = () => {
           estimatedReturns: Math.round(estimatedReturnsForYear),
         });
       }
-    } else { // Step-up SIP calculation
+    } else {
       const P = monthlyInvestment;
       const annualRate = expectedReturn / 100;
       const monthlyRate = annualRate / 12;
@@ -98,180 +99,239 @@ const SIPCalculator: React.FC = () => {
     return tick;
   };
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="bg-white p-4 border border-gray-300 rounded-lg shadow-lg text-sm space-y-1">
-          <p className="font-bold text-base mb-2">{`End of Year ${label}`}</p>
-          <div className="flex justify-between gap-4">
-            <span className="text-gray-600">Total Investment:</span>
-            <span className="font-semibold" style={{color: '#F9A825'}}>{formatIndianCurrency(data.totalInvestment)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600">Wealth Gained:</span>
-            <span className="font-semibold" style={{color: '#0D47A1'}}>{formatIndianCurrency(data.estimatedReturns)}</span>
-          </div>
-          <div className="flex justify-between border-t pt-1 mt-1"><span className="text-gray-600 font-bold">Total Value:</span><span className="font-bold text-primary">{formatIndianCurrency(data.futureValue)}</span></div>
-        </div>
-      );
-    }
-    return null;
-  };
-
   const handleCopy = () => {
     if (!result) return;
-    let textToCopy = `
-SIP Calculation Results:
-- Calculation Mode: ${calculationMode === 'regular' ? 'Regular SIP' : 'Step-up SIP'}
-- Monthly Investment: ${formatIndianCurrency(monthlyInvestment)}`;
-    if (calculationMode === 'stepUp') {
-      textToCopy += `\n- Annual Increase: ${annualIncrease}%`;
-    }
-    textToCopy += `
-- Expected Annual Return: ${expectedReturn}%
-- Investment Period: ${investmentPeriod} Years
-- Estimated Future Value: ${formatIndianCurrency(result.futureValue)}
-- Total Investment: ${formatIndianCurrency(result.totalInvestment)}
-- Wealth Gained: ${formatIndianCurrency(result.estimatedReturns)}
-
-Year-wise Projection:
-Year | Total Investment | Wealth Gained | Future Value
------------------------------------------------------------------------------
-`;
-    result.yearlyData.forEach(data => {
-      textToCopy += `${data.year.toString().padEnd(5)}| ${formatIndianCurrency(data.totalInvestment).padEnd(17)}| ${formatIndianCurrency(data.estimatedReturns).padEnd(14)}| ${formatIndianCurrency(data.futureValue)}\n`;
-    });
-    copy(textToCopy.trim());
-  };
-
-  // Define theme colors for the chart
-  const THEME_COLORS = {
-    investment: '#F9A825', // Accent - Golden/Yellow
-    returns: '#0D47A1',    // Primary - Dark Blue
+    
+    const text = `SIP Calculator Results:
+Monthly Investment: ${formatIndianCurrency(monthlyInvestment)}
+Investment Period: ${investmentPeriod} years
+Expected Return: ${expectedReturn}% p.a.
+Total Investment: ${formatIndianCurrency(result.totalInvestment)}
+Future Value: ${formatIndianCurrency(result.futureValue)}
+Estimated Returns: ${formatIndianCurrency(result.estimatedReturns)}`;
+    
+    copy(text);
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Input Controls */}
-        <div className="space-y-6">
-          <div className="flex justify-center mb-4 border-b border-gray-200">
-            <button
-              onClick={() => setCalculationMode('regular')}
-              className={`px-6 py-3 font-semibold text-sm rounded-t-lg transition-colors ${
-                calculationMode === 'regular'
-                  ? 'border-b-2 border-primary text-primary'
-                  : 'text-gray-500 hover:text-primary/80'
-              }`}
-            >
-              Regular SIP
-            </button>
-            <button
-              onClick={() => setCalculationMode('stepUp')}
-              className={`px-6 py-3 font-semibold text-sm rounded-t-lg transition-colors ${
-                calculationMode === 'stepUp'
-                  ? 'border-b-2 border-primary text-primary'
-                  : 'text-gray-500 hover:text-primary/80'
-              }`}
-            >
-              Step-up SIP
-            </button>
+    <div className="max-w-6xl mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left Column - Inputs */}
+        <div className="space-y-4">
+          {/* SIP Mode Toggle */}
+          <div className="bg-white rounded-xl p-4 shadow-sm border border-neutral-200">
+            <div className="flex gap-2 p-1 bg-neutral-100 rounded-lg">
+              <button
+                onClick={() => setCalculationMode('regular')}
+                className={`flex-1 py-2 px-3 rounded-md font-heading font-medium text-sm transition-all duration-300 ${
+                  calculationMode === 'regular'
+                    ? 'bg-white text-primary shadow-sm'
+                    : 'text-neutral-600 hover:text-primary'
+                }`}
+              >
+                Regular SIP
+              </button>
+              <button
+                onClick={() => setCalculationMode('stepUp')}
+                className={`flex-1 py-2 px-3 rounded-md font-heading font-medium text-sm transition-all duration-300 ${
+                  calculationMode === 'stepUp'
+                    ? 'bg-white text-primary shadow-sm'
+                    : 'text-neutral-600 hover:text-primary'
+                }`}
+              >
+                Step-up SIP
+              </button>
+            </div>
           </div>
-          <CalculatorInput
-            label="Monthly Investment"
-            value={monthlyInvestment}
-            onChange={setMonthlyInvestment}
-            min={500}
-            max={100000}
-            step={500}
-            prefix="₹"
-          />
-          {calculationMode === 'stepUp' && (
+
+          {/* Input Controls */}
+          <div className="space-y-4">
             <CalculatorInput
-              label="Annual Step-up"
-              value={annualIncrease}
-              onChange={setAnnualIncrease}
-              min={0}
-              max={25}
-              step={1}
-              suffix="%"
+              label="Monthly Investment"
+              value={monthlyInvestment}
+              min={500}
+              max={500000}
+              step={500}
+              onChange={setMonthlyInvestment}
+              prefix="₹"
+              icon={<PiggyBank className="h-4 w-4 text-accent" />}
+              description="Amount you want to invest every month"
             />
-          )}
-          <CalculatorInput
-            label="Expected Annual Return"
-            value={expectedReturn}
-            onChange={setExpectedReturn}
-            min={1}
-            max={20}
-            step={0.5}
-            suffix="% p.a."
-          />
-          <CalculatorInput
-            label="Investment Period"
-            value={investmentPeriod}
-            onChange={setInvestmentPeriod}
-            min={1}
-            max={40}
-            step={1}
-            suffix="Years"
-          />
-          <CallToActionButtons introText="Ready to start investing?" containerClassName="mt-4 pt-4" />
+
+            {calculationMode === 'stepUp' && (
+              <CalculatorInput
+                label="Annual Increase"
+                value={annualIncrease}
+                min={0}
+                max={50}
+                step={1}
+                onChange={setAnnualIncrease}
+                suffix="%"
+                icon={<TrendingUp className="h-4 w-4 text-accent" />}
+                description="Yearly increase in SIP amount"
+              />
+            )}
+
+            <CalculatorInput
+              label="Expected Annual Return"
+              value={expectedReturn}
+              min={1}
+              max={30}
+              step={0.5}
+              onChange={setExpectedReturn}
+              suffix="%"
+              icon={<Target className="h-4 w-4 text-accent" />}
+              description="Expected annual return from investments"
+            />
+
+            <CalculatorInput
+              label="Investment Period"
+              value={investmentPeriod}
+              min={1}
+              max={40}
+              step={1}
+              onChange={setInvestmentPeriod}
+              suffix=" years"
+              icon={<Calendar className="h-4 w-4 text-accent" />}
+              description="Duration of your SIP investment"
+            />
+          </div>
         </div>
 
-        {/* Results & Chart */}
-        <div className="bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200 min-h-[500px]">
-          {error && (
-            <div className="text-center text-red-600">
-              <AlertCircle className="w-12 h-12 mx-auto mb-2" />
-              <p className="font-semibold">{error}</p>
-            </div>
-          )}
+        {/* Right Column - Results */}
+        <div className="space-y-4">
+          {/* Results Summary */}
           {result && !error && (
-            <div className="w-full text-center">
-              <p className="text-lg text-gray-600">Estimated Future Value</p>
-              <div className="flex items-center justify-center gap-2">
-                <p className="text-4xl sm:text-5xl font-extrabold text-primary my-2">{formatIndianCurrency(result.futureValue)}</p>
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-neutral-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-heading text-base font-semibold text-primary">Investment Summary</h3>
                 <button
                   onClick={handleCopy}
-                  className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"
-                  title="Copy results to clipboard"
+                  className="flex items-center gap-1 px-2 py-1 bg-accent/10 text-accent rounded-lg font-heading font-medium text-xs hover:bg-accent/20 transition-all duration-300"
                 >
                   {copyStatus === 'copied' ? (
-                    <Check className="h-5 w-5 text-green-600" />
+                    <>
+                      <Check className="h-3 w-3" />
+                      Copied!
+                    </>
                   ) : (
-                    <Copy className="h-5 w-5" />
+                    <>
+                      <Copy className="h-3 w-3" />
+                      Copy
+                    </>
                   )}
                 </button>
               </div>
 
-              <div className="w-full h-80 mt-6">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={result.yearlyData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="year" tick={{ fontSize: 12 }} unit=" Yr" padding={{ left: 20, right: 20 }} />
-                    <YAxis tickFormatter={formatAxisY} tick={{ fontSize: 10 }} />
-                    <Tooltip content={<CustomTooltip />} />
-                    <Legend />
-                    <Area type="monotone" dataKey="totalInvestment" stackId="1" stroke={THEME_COLORS.investment} fill={THEME_COLORS.investment} name="Total Investment" />
-                    <Area type="monotone" dataKey="estimatedReturns" stackId="1" stroke={THEME_COLORS.returns} fill={THEME_COLORS.returns} name="Wealth Gained" />
-                  </AreaChart>
-                </ResponsiveContainer>
+              {/* Main Result */}
+              <div className="text-center mb-4 p-4 bg-gradient-to-br from-primary-50 to-accent-50 rounded-lg">
+                <div className="font-heading text-2xl font-bold text-transparent bg-gradient-to-r from-primary to-accent bg-clip-text mb-1">
+                  {formatIndianCurrency(result.futureValue)}
+                </div>
+                <p className="font-body text-neutral-600 text-sm">Future Value</p>
               </div>
-              <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Total Investment</p><p className="font-bold text-lg text-accent">{formatIndianCurrency(result.totalInvestment)}</p></div>
-                <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Wealth Gained</p><p className="font-bold text-lg text-green-600">{formatIndianCurrency(result.estimatedReturns)}</p></div>
-                <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Future Value</p><p className="font-bold text-lg text-primary">{formatIndianCurrency(result.futureValue)}</p></div>
+
+              {/* Summary Cards */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-neutral-50 rounded-lg p-3 text-center">
+                  <div className="font-heading text-base font-semibold text-primary mb-1">
+                    {formatIndianCurrency(result.totalInvestment)}
+                  </div>
+                  <p className="font-body text-xs text-neutral-600">Total Investment</p>
+                </div>
+                <div className="bg-green-50 rounded-lg p-3 text-center">
+                  <div className="font-heading text-base font-semibold text-green-600 mb-1">
+                    {formatIndianCurrency(result.estimatedReturns)}
+                  </div>
+                  <p className="font-body text-xs text-neutral-600">Estimated Returns</p>
+                </div>
+              </div>
+
+              {/* Return Percentage */}
+              <div className="bg-accent-50 rounded-lg p-3 text-center">
+                <div className="font-heading text-lg font-bold text-accent mb-1">
+                  {((result.estimatedReturns / result.totalInvestment) * 100).toFixed(1)}%
+                </div>
+                <p className="font-body text-xs text-neutral-600">Total Return</p>
               </div>
             </div>
           )}
-          {!result && !error && (
-            <div className="text-center text-gray-500">
-              <BarChart3 className="w-12 h-12 mx-auto mb-2" />
-              <p>Adjust the sliders to see your results.</p>
+
+          {/* Chart */}
+          {result && !error && result.yearlyData.length > 0 && (
+            <div className="bg-white rounded-xl p-4 shadow-sm border border-neutral-200">
+              <h3 className="font-heading text-base font-semibold text-primary mb-3">Growth Projection</h3>
+              <div className="h-48">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={result.yearlyData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <XAxis 
+                      dataKey="year" 
+                      stroke="#64748b"
+                      fontSize={10}
+                      fontFamily="Inter"
+                    />
+                                      <YAxis 
+                    tickFormatter={(value: any) => String(formatAxisY(value as number))}
+                    stroke="#64748b"
+                    fontSize={10}
+                    fontFamily="Inter"
+                  />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'white',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                        fontFamily: 'Inter',
+                        fontSize: '11px'
+                      }}
+                      formatter={(value: number, name: string) => [
+                        formatIndianCurrency(value),
+                        name === 'totalInvestment' ? 'Investment' : 'Returns'
+                      ]}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="totalInvestment"
+                      stackId="1"
+                      stroke="#0f172a"
+                      fill="#0f172a"
+                      fillOpacity={0.8}
+                      name="totalInvestment"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="estimatedReturns"
+                      stackId="1"
+                      stroke="#d4af37"
+                      fill="#d4af37"
+                      fillOpacity={0.8}
+                      name="estimatedReturns"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-xl p-4">
+              <p className="font-body text-red-700 text-center text-sm">{error}</p>
             </div>
           )}
         </div>
       </div>
+
+      {/* CTA Section */}
+      <div className="mt-8">
+        <CallToActionButtons 
+          introText="Ready to start your SIP investment journey?"
+          containerClassName="mt-0 pt-0 border-none"
+        />
+      </div>
+    </div>
   );
 };
 
