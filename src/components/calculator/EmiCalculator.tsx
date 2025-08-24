@@ -154,9 +154,9 @@ const EmiCalculator: React.FC = () => {
   );
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
       {/* Left side: Inputs */}
-      <div className="lg:col-span-2 w-full space-y-6">
+      <div className="lg:col-span-2 w-full space-y-4">
         <CalculatorInput
           label="Loan Amount"
           value={loanAmount}
@@ -184,27 +184,27 @@ const EmiCalculator: React.FC = () => {
           step={1}
           suffix="Years"
         />
-        <CallToActionButtons introText="Need help with your loan?" showInvestButton={false} containerClassName="mt-4 pt-4 border-t" />
+        <CallToActionButtons introText="Need help with your loan?" showInvestButton={false} containerClassName="mt-2 pt-3 border-t" />
       </div>
 
       {/* Right side: Results and Charts */}
-      <div className="lg:col-span-3 w-full bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200">
-        <div className="text-center mb-6">
-          <p className="text-lg text-gray-600">Your Monthly EMI</p>
-          <p className="text-4xl font-extrabold text-blue-700">{formatIndianCurrency(monthlyEmi)}</p>
+      <div className="lg:col-span-3 w-full bg-slate-50 p-4 rounded-xl border border-slate-200">
+        <div className="text-center mb-4">
+          <p className="text-base text-gray-600">Your Monthly EMI</p>
+          <p className="text-3xl font-extrabold text-blue-700">{formatIndianCurrency(monthlyEmi)}</p>
         </div>
 
-        <div className="flex justify-center mb-4 border-b border-gray-200">
-          <button onClick={() => setActiveTab('summary')} className={`px-6 py-3 font-semibold text-sm rounded-t-lg transition-colors ${activeTab === 'summary' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'}`}>Summary</button>
-          <button onClick={() => setActiveTab('amortization')} className={`px-6 py-3 font-semibold text-sm rounded-t-lg transition-colors ${activeTab === 'amortization' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'}`}>Amortization Schedule</button>
+        <div className="flex justify-center mb-3 border-b border-gray-200">
+          <button onClick={() => setActiveTab('summary')} className={`px-4 py-2 font-semibold text-sm rounded-t-lg transition-colors ${activeTab === 'summary' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'}`}>Summary</button>
+          <button onClick={() => setActiveTab('amortization')} className={`px-4 py-2 font-semibold text-sm rounded-t-lg transition-colors ${activeTab === 'amortization' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-gray-800'}`}>Amortization Schedule</button>
         </div>
 
         {activeTab === 'summary' && (
           <div className="text-center">
-            <div className="w-full h-64 mb-6">
+            <div className="w-full h-48 mb-4">
               <ResponsiveContainer>
                 <PieChart>
-                  <Pie data={summaryChartData} cx="50%" cy="50%" innerRadius={60} outerRadius={90} fill="#8884d8" paddingAngle={5} dataKey="value" nameKey="name">
+                  <Pie data={summaryChartData} cx="50%" cy="50%" innerRadius={50} outerRadius={80} fill="#8884d8" paddingAngle={5} dataKey="value" nameKey="name">
                     {summaryChartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
@@ -214,10 +214,10 @@ const EmiCalculator: React.FC = () => {
                 </PieChart>
               </ResponsiveContainer>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
-              <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Principal Amount</p><p className="text-lg font-bold text-gray-800">{formatIndianCurrency(loanAmount)}</p></div>
-              <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Total Interest</p><p className="text-lg font-bold text-red-600">{formatIndianCurrency(totalInterest)}</p></div>
-              <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Total Payment</p><p className="text-lg font-bold text-blue-700">{formatIndianCurrency(totalPayment)}</p></div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
+              <div className="bg-white p-2.5 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Principal Amount</p><p className="text-base font-bold text-gray-800">{formatIndianCurrency(loanAmount)}</p></div>
+              <div className="bg-white p-2.5 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Total Interest</p><p className="text-base font-bold text-red-600">{formatIndianCurrency(totalInterest)}</p></div>
+              <div className="bg-white p-2.5 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Total Payment</p><p className="text-base font-bold text-blue-700">{formatIndianCurrency(totalPayment)}</p></div>
             </div>
           </div>
         )}

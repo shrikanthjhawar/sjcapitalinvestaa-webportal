@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { BarChart, Shield, Zap, RefreshCw, ArrowLeft, ArrowRight, CheckCircle2, AlertTriangle, FileText } from 'lucide-react';
+import { BarChart, Shield, Zap, RefreshCw, ArrowLeft, ArrowRight, AlertTriangle, Target, TrendingUp } from 'lucide-react';
 import CallToActionButtons from './CallToActionButtons';
-import usePersistentState from '../hooks/usePersistentState';
-
-import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 type Question = {
   id: string;
   text: string;
   options: { text: string; score: number }[];
-  weight?: number; // Defaults to 1 if not provided
+  weight?: number;
 };
 
 const questions: Question[] = [
@@ -98,340 +95,290 @@ const questions: Question[] = [
 
 type Answers = { [key: string]: number };
 type ProfileResult = {
-  profile: 'Conservative' | 'Moderate' | 'Aggressive';
+  profile: string;
+  description: string;
   score: number;
   recommendation: string;
   Icon: React.ElementType;
   allocation: { name: string; value: number }[];
 };
 
-const profileDefinitions: (Omit<ProfileResult, 'score'> & { maxScore: number })[] = [
-  {
-    profile: 'Conservative',
-    maxScore: 16,
-    recommendation: 'You prioritize capital protection. Consider investments like Debt Mutual Funds, Fixed Deposits, and other low-risk options.',
-    Icon: Shield,
-    allocation: [
-      { name: 'Debt', value: 80 },
-      { name: 'Equity', value: 20 },
-    ],
-  },
-  {
-    profile: 'Moderate',
-    maxScore: 26,
-    recommendation: 'You seek a balance between risk and return. A diversified portfolio with a mix of Equity and Debt funds (Hybrid Funds) could be suitable.',
-    Icon: BarChart,
-       allocation: [
-      { name: 'Debt', value: 40 },
-      { name: 'Equity', value: 60 },
-    ],
-  },
-  {
-    profile: 'Aggressive',
-    maxScore: Infinity,
-    recommendation: 'You are comfortable with high risk for potentially higher returns. Consider focusing on Equity Mutual Funds, including Small and Mid-cap funds.',
-    Icon: Zap,
-       allocation: [
-      { name: 'Debt', value: 10 },
-      { name: 'Equity', value: 90 },
-    ],
-  },
-];
-
-const COLORS = ['#0A1F44', '#C39A32', '#4CAF50', '#FF5722']; // Primary, Accent, Green, Orange
-const RADIAN = Math.PI / 180;
-
 const RiskProfileForm: React.FC = () => {
-  const [quizStarted, setQuizStarted] = usePersistentState<boolean>('riskProfile_quizStarted', false, { storage: 'sessionStorage' });
-  const [currentStep, setCurrentStep] = usePersistentState<number>('riskProfile_currentStep', 0, { storage: 'sessionStorage' });
-  const [answers, setAnswers] = usePersistentState<Answers>('riskProfile_answers', {}, { storage: 'sessionStorage' });
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [answers, setAnswers] = useState<Answers>({});
+  const [showResults, setShowResults] = useState(false);
   const [result, setResult] = useState<ProfileResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [chartLoading, setChartLoading] = useState(true);
 
-  const [direction, setDirection] = useState(1);
+  const currentQuestion = questions[currentQuestionIndex];
 
-  React.useEffect(() => {
-    if (result) {
-      setChartLoading(true);
-      const timer = setTimeout(() => setChartLoading(false), 500);
-      return () => clearTimeout(timer);
-    }
-  }, [result]);
+  const handleAnswerSelect = (score: number) => {
+    setSelectedAnswer(score);
+  };
 
-  const handleAnswerChange = (questionId: string, score: number) => {
-    const newAnswers = { ...answers, [questionId]: score };
-    setAnswers(newAnswers);
-    setError(null);
-
-    setTimeout(() => {
-      if (currentStep < questions.length - 1) {
-        setDirection(1);
-        setCurrentStep(prev => prev + 1);
+  const handleNext = () => {
+    if (selectedAnswer !== null) {
+      const newAnswers = { ...answers, [currentQuestion.id]: selectedAnswer };
+      setAnswers(newAnswers);
+      
+      if (currentQuestionIndex === questions.length - 1) {
+        const calculatedResult = calculateProfile(newAnswers);
+        setResult(calculatedResult);
+        setShowResults(true);
       } else {
-        calculateAndSetResult(newAnswers);
+        setCurrentQuestionIndex(prev => prev + 1);
+        setSelectedAnswer(null);
       }
-    }, 300);
-  };
-
-  const handleBack = () => {
-    if (currentStep > 0) {
-      setDirection(-1);
-      setCurrentStep(prev => prev - 1);
-      setError(null);
     }
   };
 
-  const calculateAndSetResult = (finalAnswers: Answers) => {
-    if (Object.keys(finalAnswers).length < questions.length) {
-      setError('Please answer all questions before submitting.');
-      return;
+  const handlePrevious = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
+      setSelectedAnswer(answers[questions[currentQuestionIndex - 1].id] || null);
     }
+  };
 
-    let weightedScoreSum = 0;
+  const calculateProfile = (userAnswers: Answers): ProfileResult => {
+    let totalScore = 0;
     let totalWeight = 0;
 
     questions.forEach(question => {
-      const score = finalAnswers[question.id];
-      const weight = question.weight || 1;
-      weightedScoreSum += score * weight;
-      totalWeight += weight;
+      const answer = userAnswers[question.id];
+      if (answer !== undefined) {
+        const weight = question.weight || 1;
+        totalScore += answer * weight;
+        totalWeight += weight;
+      }
     });
 
-    const normalizedScore = (weightedScoreSum / totalWeight) * questions.length;
-    const totalScore = Math.round(normalizedScore);
+    const averageScore = totalScore / totalWeight;
+    let profile: string;
+    let description: string;
+    let recommendation: string;
+    let Icon: any;
 
-    const resultDefinition = profileDefinitions.find(p => totalScore <= p.maxScore);
-
-    if (resultDefinition) {
-      const { maxScore, ...profileData } = resultDefinition;
-      setResult({ ...profileData, score: totalScore });
+    if (averageScore <= 1.5) {
+      profile = "Conservative";
+      description = "You prefer safety and stability over high returns. Your investments focus on capital preservation with minimal risk.";
+      recommendation = "Focus on debt funds, government securities, and high-quality corporate bonds. Consider a small allocation to equity funds for long-term growth.";
+      Icon = Shield;
+    } else if (averageScore <= 2.5) {
+      profile = "Moderately Conservative";
+      description = "You seek a balance between safety and growth, willing to take some risk for better returns.";
+      recommendation = "A balanced approach with 60-70% debt instruments and 30-40% equity funds. Consider hybrid funds for diversification.";
+      Icon = Target;
+    } else if (averageScore <= 3.5) {
+      profile = "Balanced";
+      description = "You're comfortable with moderate risk and seek steady growth over time.";
+      recommendation = "Equal allocation between debt and equity (50-50). Diversify across different fund categories and sectors.";
+      Icon = BarChart;
+    } else if (averageScore <= 4.5) {
+      profile = "Moderately Aggressive";
+      description = "You're willing to take higher risks for potentially higher returns.";
+      recommendation = "Higher equity allocation (70-80%) with focus on growth funds. Maintain some debt exposure for stability.";
+      Icon = Zap;
     } else {
-      console.error("Could not determine risk profile for score:", totalScore);
+      profile = "Aggressive";
+      description = "You're comfortable with high risk and seek maximum returns over the long term.";
+      recommendation = "Heavy equity focus (80-90%) with emphasis on small-cap and sector funds. Minimal debt exposure.";
+      Icon = TrendingUp;
     }
-  };
 
-  const variants = {
-    enter: (direction: number) => ({ x: direction > 0 ? 1000 : -1000, opacity: 0 }),
-    center: { zIndex: 1, x: 0, opacity: 1 },
-    exit: (direction: number) => ({ zIndex: 0, x: direction < 0 ? 1000 : -1000, opacity: 0 }),
+    return {
+      profile,
+      description,
+      recommendation,
+      score: Math.round(averageScore * 10) / 10,
+      Icon,
+      allocation: [
+        { name: "Equity Funds", value: Math.round((averageScore / 5) * 80) },
+        { name: "Debt Funds", value: Math.round(((5 - averageScore) / 5) * 80) },
+        { name: "Hybrid Funds", value: 20 }
+      ]
+    };
   };
 
   const handleReset = () => {
-    setQuizStarted(false);
-    setCurrentStep(0);
+    setCurrentQuestionIndex(0);
+    setSelectedAnswer(null);
     setAnswers({});
+    setShowResults(false);
     setResult(null);
-    setError(null);
-    setChartLoading(true);
-    setDirection(1);
   };
 
-  const progressPercentage = quizStarted ? ((currentStep + 1) / questions.length) * 100 : 0;
-
   return (
-    <div id="risk-profiler" className="bg-white py-12 sm:py-16">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white border border-gray-200 rounded-xl shadow-lg p-6 sm:p-10 min-h-[600px] flex flex-col justify-center">
-          <AnimatePresence mode="wait">
-            {quizStarted && result ? (
-              <motion.div
-                key="result"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ duration: 0.5, ease: "easeOut" }}
-              >
-                <div className="text-center mb-6">
-                  <result.Icon className="mx-auto h-16 w-16 text-primary" aria-hidden="true" />
-                  <h3 className="mt-3 text-lg font-semibold text-gray-800">Your Investor Profile is</h3>
-                  <p className="mt-1 text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">{result.profile}</p>
-                  <p className="mt-2 text-sm text-gray-500">Based on a score of {result.score}</p>
-                </div>
+    <div className="max-w-4xl mx-auto">
+      {/* Header */}
+      <div className="text-center mb-8 sm:mb-12">
+        <div className="inline-flex items-center gap-2 bg-accent-50 text-accent-700 rounded-full px-3 sm:px-4 py-2 text-sm font-semibold mb-4">
+          <Target className="h-4 w-4" />
+          Risk Assessment
+        </div>
+        <h1 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-3 sm:mb-4">
+          Discover Your Investor Profile
+        </h1>
+        <p className="font-body text-base sm:text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+          Answer a few simple questions to understand your risk tolerance and get personalized investment insights.
+        </p>
+      </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-8 items-center mt-8">
-                  <div className="md:col-span-3">
-                    <h4 className="font-bold text-lg text-gray-900 mb-2">Recommended Strategy</h4>
-                    <p className="text-gray-600 mb-4 leading-relaxed text-sm">{result.recommendation}</p>
-                    <h4 className="font-bold text-lg text-gray-900 mb-3">Suggested Asset Allocation</h4>
-                    <ul className="space-y-2">
-                      {result.allocation.map((alloc, index) => (
-                        <li key={alloc.name} className="flex items-center text-base">
-                          <span className="h-4 w-4 rounded-full mr-3" style={{ backgroundColor: COLORS[index % COLORS.length] }}></span>
-                          <span className="font-medium text-gray-700">{alloc.name}:</span>
-                          <span className="ml-auto font-bold text-gray-800">{alloc.value}%</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+      {/* Progress Bar */}
+      {!showResults && (
+        <div className="mb-6 sm:mb-8">
+          <div className="flex items-center justify-between text-sm text-neutral-600 mb-2">
+            <span>Question {currentQuestionIndex + 1} of {questions.length}</span>
+            <span>{Math.round(((currentQuestionIndex + 1) / questions.length) * 100)}%</span>
+          </div>
+          <div className="w-full bg-neutral-200 rounded-full h-2">
+            <div 
+              className="bg-accent-gradient h-2 rounded-full transition-all duration-300"
+              style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
+            ></div>
+          </div>
+        </div>
+      )}
 
-                  <div className="md:col-span-2 w-full h-64 flex items-center justify-center">
-                    {!chartLoading && (
-                      <ResponsiveContainer>
-                        <PieChart>
-                          <Pie
-                            isAnimationActive={true}
-                            animationDuration={800}
-                            data={result.allocation}
-                            cx="50%"
-                            cy="50%"
-                            labelLine={false}
-                            outerRadius={80}
-                            innerRadius={50}
-                            fill="#8884d8"
-                            dataKey="value"
-                            nameKey="name"
-                            label={({ cx, cy, midAngle, innerRadius, outerRadius, percent }) => {
-                              if (midAngle === undefined || percent === undefined || innerRadius === undefined || outerRadius === undefined) return null;
-                              const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-                              const x = cx + radius * Math.cos(-midAngle * RADIAN);
-                              const y = cy + radius * Math.sin(-midAngle * RADIAN);
-                              return (
-                                <text x={x} y={y} fill="white" textAnchor="middle" dominantBaseline="central" fontSize="14" fontWeight="bold">
-                                  {`${(percent * 100).toFixed(0)}%`}
-                                </text>
-                              );
-                            }}
-                          >
-                            {result.allocation.map((entry, index) => (
-                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} stroke="#fff" strokeWidth={2} />
-                            ))}
-                          </Pie>
-                          <Tooltip formatter={(value: number) => `${value}%`} />
-                          <Legend iconType="circle" />
-                        </PieChart>
-                      </ResponsiveContainer>
-                    )}
-                  </div>
-                </div>
-
-                <CallToActionButtons containerClassName="mt-10" introText="Ready to take the next step based on your profile?" />
-
-                <div className="mt-8 bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-lg">
-                  <div className="flex">
-                    <div className="flex-shrink-0 pt-0.5">
-                      <AlertTriangle className="h-5 w-5 text-yellow-500" aria-hidden="true" />
-                    </div>
-                    <div className="ml-3">
-                      <p className="text-sm font-bold text-yellow-800">Disclaimer</p>
-                      <p className="mt-1 text-xs leading-relaxed text-yellow-700">
-                        This risk profile is for informational purposes only and does not constitute financial advice. Please consult with a certified financial advisor before making any investment decisions.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="text-center mt-6">
+      {/* Question Form or Results */}
+      <AnimatePresence mode="wait">
+        {!showResults ? (
+          <motion.div
+            key="question"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-neutral-200 p-6 sm:p-8"
+          >
+            {/* Question */}
+            <div className="mb-6 sm:mb-8">
+              <h2 className="font-heading text-lg sm:text-xl lg:text-2xl font-bold text-primary mb-4 sm:mb-6">
+                {currentQuestion.text}
+              </h2>
+              
+              {/* Options */}
+              <div className="space-y-3 sm:space-y-4">
+                {currentQuestion.options.map((option, index) => (
                   <button
-                    onClick={handleReset}
-                    className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-primary font-medium transition-colors"
-                  >
-                    <RefreshCw className="h-4 w-4" />
-                    Take the Quiz Again
-                  </button>
-                </div>
-              </motion.div>
-            ) : !quizStarted ? (
-              <motion.div
-                key="start"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="text-center flex flex-col items-center justify-center"
-              >
-                <FileText className="h-16 w-16 mx-auto text-primary mb-4" />
-                <h3 className="text-2xl font-bold text-gray-900">Ready to Find Your Path?</h3>
-                <p className="mt-2 text-gray-600 max-w-xl mx-auto">
-                  This quick assessment will help us understand your financial goals and comfort with risk, guiding you to the right investment strategy.
-                </p>
-                <button
-                  onClick={() => setQuizStarted(true)}
-                  className="mt-8 inline-flex items-center gap-2 bg-accent text-primary font-bold py-3 px-8 rounded-lg hover:bg-opacity-90 transition-all transform hover:scale-105 shadow-md"
-                >
-                  Let's Begin
-                  <ArrowRight className="h-5 w-5" />
-                </button>
-              </motion.div>
-            ) : (
-              <motion.div
-                key={currentStep}
-                custom={direction}
-                variants={variants}
-                initial="enter"
-                animate="center"
-                exit="exit"
-                transition={{ type: 'spring', stiffness: 120, damping: 20 }}
-                className="relative"
-              >
-                <div className="mb-8">
-                  <div className="flex justify-between mb-2">
-                    <span className="text-base font-medium text-gray-600">Question {currentStep + 1} of {questions.length}</span>
-                    <span className="text-sm font-medium text-gray-600">{Math.round(progressPercentage)}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2.5">
-                    <div className="bg-accent h-2.5 rounded-full transition-all duration-500" style={{ width: `${progressPercentage}%` }}></div>
-                  </div>
-                </div>
-
-                <div className="text-center min-h-[84px] sm:min-h-[56px] flex items-center justify-center">
-                  <p className="text-lg font-semibold text-gray-900 mb-6 sm:text-xl">
-                    {questions[currentStep].text}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 min-h-[160px]">
-                  {questions[currentStep].options.map((option) => (
-                    <label
-                      key={option.score}
-                      className={`relative flex items-center justify-center text-center p-4 rounded-lg cursor-pointer transition-all duration-200 border-2 ${
-                        answers[questions[currentStep].id] === option.score
-                          ? 'bg-primary border-accent text-accent shadow-lg'
-                          : 'bg-white border-gray-300 text-gray-700 hover:bg-gray-100 hover:border-accent'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name={questions[currentStep].id}
-                        value={option.score}
-                        checked={answers[questions[currentStep].id] === option.score}
-                        onChange={() => handleAnswerChange(questions[currentStep].id, option.score)}
-                        className="sr-only"
-                      />
-                      <span className="font-medium text-sm">{option.text}</span>
-                      {answers[questions[currentStep].id] === option.score && (
-                        <motion.div
-                          layoutId="check"
-                          initial={{ opacity: 0, scale: 0.5 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-                          className="absolute -top-3 -right-3 bg-white rounded-full p-0.5"
-                        >
-                          <CheckCircle2 className="h-5 w-5 text-primary" />
-                        </motion.div>
-                      )}
-                    </label>
-                  ))}
-                </div>
-
-                <div className="min-h-[24px] text-center mt-4">
-                  {error && <p className="text-red-500 text-sm font-medium">{error}</p>}
-                </div>
-
-                <div className="flex justify-between items-center pt-4 mt-4 border-t border-gray-200">
-                  <button
-                    type="button"
-                    onClick={handleBack}
-                    className={`inline-flex items-center gap-2 text-gray-600 font-bold py-3 px-6 rounded-lg hover:text-primary transition-colors ${
-                      currentStep === 0 ? 'invisible' : 'visible'
+                    key={index}
+                    onClick={() => handleAnswerSelect(option.score)}
+                    className={`w-full text-left p-4 sm:p-5 rounded-xl sm:rounded-2xl border-2 transition-all duration-300 hover:shadow-md active:scale-95 touch-manipulation ${
+                      selectedAnswer === option.score
+                        ? 'border-accent bg-accent-50 text-accent-700'
+                        : 'border-neutral-200 hover:border-accent/30 text-neutral-700 hover:bg-neutral-50'
                     }`}
                   >
-                    <ArrowLeft className="h-5 w-5" /> Back
+                    <span className="font-medium text-sm sm:text-base">{option.text}</span>
                   </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <div className="flex justify-between items-center pt-4 border-t border-neutral-100">
+              <button
+                onClick={handlePrevious}
+                disabled={currentQuestionIndex === 0}
+                className={`flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 ${
+                  currentQuestionIndex === 0
+                    ? 'text-neutral-400 cursor-not-allowed'
+                    : 'text-neutral-600 hover:text-primary hover:bg-neutral-100 active:scale-95'
+                }`}
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Previous
+              </button>
+              
+              <button
+                onClick={handleNext}
+                disabled={selectedAnswer === null}
+                className={`flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-medium transition-all duration-300 ${
+                  selectedAnswer === null
+                    ? 'bg-neutral-200 text-neutral-400 cursor-not-allowed'
+                    : 'bg-accent-gradient text-primary hover:shadow-glow active:scale-95'
+                }`}
+              >
+                {currentQuestionIndex === questions.length - 1 ? 'Get Results' : 'Next'}
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="results"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-6 sm:space-y-8"
+          >
+            {/* Results Header */}
+            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-neutral-200 p-6 sm:p-8 text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-accent-100 rounded-2xl mb-4 sm:mb-6">
+                <BarChart className="h-8 w-8 sm:h-10 sm:w-10 text-accent" />
+              </div>
+              <h2 className="font-heading text-xl sm:text-2xl lg:text-3xl font-bold text-primary mb-3 sm:mb-4">
+                Your Risk Profile: {result?.profile}
+              </h2>
+              <p className="font-body text-base sm:text-lg text-neutral-600 max-w-2xl mx-auto leading-relaxed">
+                {result?.description}
+              </p>
+            </div>
+
+            {/* Call to Action */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="mt-8"
+            >
+              <CallToActionButtons 
+                containerClassName="bg-primary-gradient rounded-2xl p-6 text-white text-center" 
+                introText="Ready to take the next step based on your profile?" 
+              />
+            </motion.div>
+
+            {/* Premium Disclaimer */}
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="mt-6 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 border border-amber-200 rounded-2xl p-4"
+            >
+              <div className="flex items-start gap-3">
+                <div className="bg-gradient-to-r from-amber-400 to-orange-500 p-2.5 rounded-xl flex-shrink-0">
+                  <AlertTriangle className="h-5 w-5 text-white" />
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className="font-bold text-amber-800 text-sm">Important Disclaimer</h4>
+                    <div className="flex items-center gap-1 bg-amber-100 text-amber-700 rounded-full px-2 py-1 text-xs font-medium">
+                      <Shield className="h-3 w-3" />
+                      Advisory Notice
+                    </div>
+                  </div>
+                  <p className="text-xs text-amber-800 leading-relaxed">
+                    This risk profile assessment is for <strong>informational purposes only</strong> and does not constitute financial, investment, or legal advice. 
+                    The results are based on your responses and general market assumptions. We strongly recommend consulting with a 
+                    <strong> certified financial advisor</strong> before making any investment decisions based on this assessment.
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Reset Button */}
+            <div className="text-center mt-6">
+              <button
+                onClick={handleReset}
+                className="inline-flex items-center gap-2 bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-primary font-semibold px-5 py-2.5 rounded-xl transition-all duration-300 border border-neutral-200 hover:border-primary/30 text-sm active:scale-95 touch-manipulation"
+              >
+                <RefreshCw className="h-4 w-4" />
+                Retake Assessment
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

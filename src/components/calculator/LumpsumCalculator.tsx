@@ -143,7 +143,10 @@ Year | Total Investment | Wealth Gained | Future Value
             step={1}
             suffix="Years"
           />
-          <CallToActionButtons introText="Ready to make a lumpsum investment?" containerClassName="mt-4 pt-4" />
+          <CallToActionButtons 
+            introText="Ready to make a lumpsum investment?" 
+            containerClassName="mt-6 pt-6 border-t border-neutral-200" 
+          />
         </div>
 
         {/* Results & Chart */}

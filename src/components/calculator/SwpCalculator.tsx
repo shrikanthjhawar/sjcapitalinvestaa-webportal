@@ -144,13 +144,13 @@ Year | Opening Balance | Total Withdrawal | Interest Earned | Closing Balance
   };
 
   return (
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Input Controls */}
-        <div className="space-y-8">
-          <div className="flex justify-center mb-4 border-b border-gray-200">
+        <div className="space-y-4">
+          <div className="flex justify-center mb-3 border-b border-gray-200">
             <button
               onClick={() => setCalculationMode('projection')}
-              className={`px-6 py-3 font-semibold text-sm rounded-t-lg transition-colors ${
+              className={`px-4 py-2 font-semibold text-sm rounded-t-lg transition-colors ${
                 calculationMode === 'projection'
                   ? 'border-b-2 border-blue-600 text-blue-600'
                   : 'text-gray-500 hover:text-gray-800'
@@ -160,7 +160,7 @@ Year | Opening Balance | Total Withdrawal | Interest Earned | Closing Balance
             </button>
             <button
               onClick={() => setCalculationMode('withdrawal')}
-              className={`px-6 py-3 font-semibold text-sm rounded-t-lg transition-colors ${
+              className={`px-4 py-2 font-semibold text-sm rounded-t-lg transition-colors ${
                 calculationMode === 'withdrawal'
                   ? 'border-b-2 border-blue-600 text-blue-600'
                   : 'text-gray-500 hover:text-gray-800'
@@ -189,8 +189,8 @@ Year | Opening Balance | Total Withdrawal | Interest Earned | Closing Balance
               prefix="₹"
             />
           ) : (
-            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg text-center">
-              <p className="text-sm text-blue-800">The sustainable monthly withdrawal amount will be calculated based on your inputs.</p>
+            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-center">
+              <p className="text-xs text-blue-800">The sustainable monthly withdrawal amount will be calculated based on your inputs.</p>
             </div>
           )}
           <CalculatorInput
@@ -211,48 +211,48 @@ Year | Opening Balance | Total Withdrawal | Interest Earned | Closing Balance
             step={1}
             suffix="Years"
           />
-          <CallToActionButtons introText="Ready to plan your regular income?" containerClassName="mt-8 pt-6 border-t border-gray-200" />
+          <CallToActionButtons introText="Ready to plan your regular income?" containerClassName="mt-4 pt-4 border-t border-gray-200" />
         </div>
 
         {/* Results & Chart */}
-        <div className="bg-slate-50 p-4 sm:p-6 rounded-xl border border-slate-200">
-          {error && <div className="text-center text-red-600"><AlertCircle className="w-12 h-12 mx-auto mb-2" /><p className="font-semibold">{error}</p></div>}
+        <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
+          {error && <div className="text-center text-red-600"><AlertCircle className="w-10 h-10 mx-auto mb-2" /><p className="font-semibold text-sm">{error}</p></div>}
 
           {result && !error && (
-            <div className="space-y-8">
+            <div className="space-y-6">
               {calculationMode === 'withdrawal' && result.calculatedMonthlyWithdrawal != null && (
-                <div className="text-center bg-white p-4 rounded-lg shadow-sm border border-blue-200">
-                  <p className="text-lg text-gray-600">You can withdraw</p>
-                  <p className="text-4xl font-extrabold text-blue-700 my-2">
+                <div className="text-center bg-white p-3 rounded-lg shadow-sm border border-blue-200">
+                  <p className="text-base text-gray-600">You can withdraw</p>
+                  <p className="text-3xl font-extrabold text-blue-700 my-1">
                     {formatIndianCurrency(result.calculatedMonthlyWithdrawal)}
                   </p>
-                  <p className="text-lg text-gray-600">per month</p>
+                  <p className="text-base text-gray-600">per month</p>
                 </div>
               )}
               {/* Summary Section */}
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-center">Projection</h3>
+                <h3 className="text-lg font-bold text-center">Projection</h3>
                 <button
                   onClick={handleCopy}
-                  className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"
+                  className="p-1.5 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 transition-colors"
                   title="Copy results to clipboard"
                 >
                   {copyStatus === 'copied' ? (
-                    <Check className="h-5 w-5 text-green-600" />
+                    <Check className="h-4 w-4 text-green-600" />
                   ) : (
-                    <Copy className="h-5 w-5" />
+                    <Copy className="h-4 w-4" />
                   )}
                 </button>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-center">
-                <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Total Withdrawn</p><p className="font-bold text-lg text-gray-800">{formatIndianCurrency(result.totalWithdrawn)}</p></div>
-                <div className="bg-white p-3 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Final Value</p><p className="font-bold text-lg text-blue-700">{formatIndianCurrency(result.finalValue)}</p></div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-center">
+                <div className="bg-white p-2.5 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Total Withdrawn</p><p className="font-bold text-base text-gray-800">{formatIndianCurrency(result.totalWithdrawn)}</p></div>
+                <div className="bg-white p-2.5 rounded-lg shadow-sm border"><p className="text-xs text-gray-500">Final Value</p><p className="font-bold text-base text-blue-700">{formatIndianCurrency(result.finalValue)}</p></div>
               </div>
 
               {/* Yearly Breakdown Table */}
               <div>
-                <h3 className="text-xl font-bold text-center mb-4">Year-wise Projection</h3>
-                <div className="overflow-x-auto max-h-96">
+                <h3 className="text-lg font-bold text-center mb-3">Year-wise Projection</h3>
+                <div className="overflow-x-auto max-h-80">
                   <table className="min-w-full bg-white border border-gray-200 text-sm">
                     <thead className="bg-gray-100 sticky top-0">
                       <tr>
@@ -280,7 +280,7 @@ Year | Opening Balance | Total Withdrawal | Interest Earned | Closing Balance
             </div>
           )}
 
-          {!result && !error && <div className="text-center text-gray-500"><BarChart3 className="w-12 h-12 mx-auto mb-2" /><p>Adjust the sliders to see your results.</p></div>}
+          {!result && !error && <div className="text-center text-gray-500"><BarChart3 className="w-10 h-10 mx-auto mb-2" /><p className="text-sm">Adjust the sliders to see your results.</p></div>}
         </div>
       </div>
   );
