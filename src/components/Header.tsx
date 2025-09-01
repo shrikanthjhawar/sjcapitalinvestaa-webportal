@@ -14,11 +14,11 @@ const navLinks = [
 ];
 
 const externalLinks = [
-    { name: 'Client Login', href: '' }, // Add your client login URL here
+    { name: 'Client Login', href: 'https://portal.sjcapital.in' },
 ];
 
 const ctaLinks = [
-    { name: 'Sign Up', href: '' }, // Add your sign up URL here
+    { name: 'Sign Up', href: 'https://portal.sjcapital.in' },
 ];
 
 const Header: React.FC = () => {

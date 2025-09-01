@@ -37,7 +37,7 @@ const CallToActionButtons: React.FC<CallToActionButtonsProps> = ({
       <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
         {showInvestButton && (
           <a
-            href="https://invest.sjcapital.in"
+            href="https://portal.sjcapital.in"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-3 bg-accent-gradient text-primary font-bold py-4 px-8 rounded-xl hover:shadow-glow transition-all duration-300 transform hover:scale-105 shadow-premium"

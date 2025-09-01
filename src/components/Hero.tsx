@@ -29,20 +29,7 @@ const Hero: React.FC = () => {
       <div className="absolute bottom-16 right-8 w-40 h-40 sm:bottom-32 sm:right-16 sm:w-80 sm:h-80 bg-primary-400/5 rounded-full blur-3xl"></div>
       
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
-        <div className="text-center">
-          {/* Refined Badge - Mobile Optimized */}
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="mb-6 sm:mb-8"
-          >
-            <div className="inline-flex items-center gap-2 bg-white/5 backdrop-blur-sm border border-white/10 rounded-full px-4 py-2 sm:px-5 text-sm font-medium">
-              <CheckCircle className="h-4 w-4 text-accent" />
-              <span className="text-white/90 text-xs sm:text-sm">AMFI Registered Mutual Fund Distributor</span>
-            </div>
-          </motion.div>
-
+        <div className="text-center pt-20 pb-16 sm:pt-24 sm:pb-20">
           {/* Refined Headline - Mobile Optimized */}
           <motion.h1 
             {...fadeInUp}
@@ -73,7 +60,7 @@ const Hero: React.FC = () => {
             className="mb-12 sm:mb-16"
           >
             <a
-              href="https://invest.sjcapital.in"
+              href="https://portal.sjcapital.in"
               target="_blank"
               rel="noopener noreferrer"
               className="group inline-flex items-center gap-3 bg-accent-gradient text-primary px-6 py-4 sm:px-8 sm:py-4 rounded-xl font-semibold hover:shadow-glow active:scale-95 transition-all duration-300 transform hover:scale-105 shadow-premium touch-manipulation"
