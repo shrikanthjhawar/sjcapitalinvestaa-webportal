@@ -18,7 +18,7 @@ const externalLinks = [
 ];
 
 const ctaLinks = [
-    { name: 'Sign Up', href: 'https://portal.sjcapital.in' },
+    { name: 'Sign Up', href: 'https://portal.sjcapital.in/client/signup' },
 ];
 
 const Header: React.FC = () => {
