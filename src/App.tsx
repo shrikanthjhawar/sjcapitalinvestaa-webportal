@@ -9,7 +9,10 @@ import RiskProfilePage from './pages/RiskProfilePage';
 import Layout from './components/Layout';
 import ScrollToTop from './components/ScrollToTop';
 import TermsOfServicePage from './pages/TermsOfServicePage';
+import LoanPage from './pages/LoanPage';
 import NotFoundPage from './pages/NotFoundPage';
+
+import InvestPage from './pages/InvestPage';
 
 function App() {
   return (
@@ -18,6 +21,7 @@ function App() {
     <>
       <ScrollToTop />
       <Routes>
+        <Route path="/invest" element={<InvestPage />} />
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage />} />
           <Route path="/calculators" element={<CalculatorsPage />} />
@@ -25,6 +29,7 @@ function App() {
           <Route path="/blogs" element={<BlogListPage />} />
           <Route path="/blogs/:slug" element={<BlogPostPage />} />
           <Route path="/risk-profile" element={<RiskProfilePage />} />
+          <Route path="/loan-against-securities" element={<LoanPage />} />
           <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
           <Route path="/terms-of-service" element={<TermsOfServicePage />} />
           <Route path="*" element={<NotFoundPage />} />
